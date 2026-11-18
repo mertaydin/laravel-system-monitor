@@ -27,7 +27,7 @@ Route::group([
 
         $request->session()->put('system-monitor.refresh_interval', (int) $validated['interval']);
 
-        return response()->json(['interval' => (int) $validated['interval']]);
+        return redirect()->route('system-monitor.index');
     })->name('refresh')->middleware('throttle:20,1');
 
     Route::post('/language', function (Request $request) {
