@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.21 - 2026-11-18
+
+- Fix per-card sound toggle initialization by attaching the control before reading its parent card state.
+- Ensure per-card sound buttons remain visible and clickable.
+
 ## v0.1.20 - 2026-11-18
 
 - Force per-card sound controls to remain visible and clickable across dashboard theme and button styles.
