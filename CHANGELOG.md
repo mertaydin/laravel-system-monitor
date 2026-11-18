@@ -4,6 +4,7 @@
 
 - Rebuild the README dashboard preview to reflect the current dashboard controls and monitoring cards, including per-card sound controls and refresh preferences.
 - Update dashboard asset cache-busting versions to v0.1.22.
+- Refresh documentation and dashboard assets for v0.1.23.
 
 
 ## v0.1.22 - 2026-11-18
