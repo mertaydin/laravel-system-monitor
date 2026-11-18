@@ -1,0 +1,47 @@
+{
+  "name": "mertaydin/laravel-system-monitor",
+  "description": "A lightweight, extensible system health and resource monitoring dashboard for Laravel applications.",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": "^8.2",
+    "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0",
+    "illuminate/database": "^10.0|^11.0|^12.0|^13.0",
+    "illuminate/routing": "^10.0|^11.0|^12.0|^13.0",
+    "illuminate/support": "^10.0|^11.0|^12.0|^13.0",
+    "illuminate/view": "^10.0|^11.0|^12.0|^13.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^8.0|^9.0|^10.0|^11.0",
+    "phpunit/phpunit": "^10.5|^11.0",
+    "laravel/pint": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "MertAydin\\SystemMonitor\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "MertAydin\\SystemMonitor\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": ["MertAydin\\SystemMonitor\\SystemMonitorServiceProvider"]
+    }
+  },
+  "scripts": {
+    "test": "phpunit",
+    "format": "pint --test"
+  },
+  "config": {"sort-packages": true},
+  "minimum-stability": "stable",
+  "prefer-stable": true,
+  "homepage": "https://github.com/mertaydin/laravel-system-monitor",
+  "support": {
+    "issues": "https://github.com/mertaydin/laravel-system-monitor/issues",
+    "source": "https://github.com/mertaydin/laravel-system-monitor"
+  },
+  "keywords": ["laravel", "system-monitor", "monitoring", "health-check", "server", "dashboard"]
+}
