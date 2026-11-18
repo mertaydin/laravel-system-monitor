@@ -79,4 +79,5 @@ return [
     'next_refresh' => 'Sonraki yenileme',
     'refresh_now' => 'Şimdi yenile',
     'drag_handle' => 'Sıralamak için basılı tutup sürükleyin',
+    'save' => 'Kaydet',
 ];
