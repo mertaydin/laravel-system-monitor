@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.22 - 2026-11-18
+
+- Refresh the README dashboard preview with the current server, PHP, database, cache, queue, and application health cards.
+
+# Changelog
+
 ## v0.1.21 - 2026-11-18
 
 - Fix per-card sound toggle initialization by attaching the control before reading its parent card state.
