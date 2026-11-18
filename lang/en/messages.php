@@ -71,4 +71,12 @@ return [
     'application_timezone_hint' => 'Configured Laravel timezone',
     'move_up' => 'Move up',
     'move_down' => 'Move down',
+    'refresh_interval' => 'Automatic refresh interval',
+    'refresh_disabled' => 'Disabled',
+    'seconds' => 'seconds',
+    'minute' => 'minute',
+    'minutes' => 'minutes',
+    'next_refresh' => 'Next refresh',
+    'refresh_now' => 'Refresh now',
+    'drag_handle' => 'Hold and drag to reorder',
 ];
