@@ -1,8 +1,8 @@
 <?php
 
-namespace MertAydin\SystemMonitor;
+namespace MertAydin\\SystemMonitor;
 
-use Illuminate\Support\ServiceProvider;
+use Illuminate\\Support\\ServiceProvider;
 
 class SystemMonitorServiceProvider extends ServiceProvider
 {
@@ -16,6 +16,7 @@ class SystemMonitorServiceProvider extends ServiceProvider
     {
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'system-monitor');
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'system-monitor');
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -29,6 +30,10 @@ class SystemMonitorServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../public' => public_path('vendor/system-monitor'),
             ], 'system-monitor-assets');
+
+            $this->publishes([
+                __DIR__.'/../lang' => lang_path('vendor/system-monitor'),
+            ], 'system-monitor-translations');
         }
     }
 }
