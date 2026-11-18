@@ -54,3 +54,5 @@ html[dir="rtl"] .sm-header,html[dir="rtl"] .sm-actions,html[dir="rtl"] .sm-brand
 .sm-body[data-theme="light"] .sm-refresh-setting{border-color:#e5eaf0}
 @media(max-width:900px){.sm-header{flex-wrap:wrap}.sm-actions{flex-wrap:wrap}.sm-refresh-status{order:3;width:100%;justify-content:flex-end}}
 @media(max-width:520px){.sm-refresh-status{justify-content:space-between}.sm-updated{display:block}}
+
+.sm-refresh-setting [data-sm-save-refresh]{flex:none}
