@@ -1,8 +1,8 @@
 <?php
 
-namespace MertAydin\\SystemMonitor;
+namespace MertAydin\SystemMonitor;
 
-use Illuminate\\Support\\ServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
 class SystemMonitorServiceProvider extends ServiceProvider
 {
