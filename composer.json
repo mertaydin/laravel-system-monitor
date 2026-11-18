@@ -1,6 +1,6 @@
 {
   "name": "mertaydin/laravel-system-monitor",
-  "description": "A lightweight, extensible system health and resource monitoring dashboard for Laravel applications.",
+  "description": "A customizable Laravel system monitoring dashboard for server resources, PHP, database, cache, queue and application health.",
   "type": "library",
   "license": "MIT",
   "require": {
@@ -28,14 +28,18 @@
   },
   "extra": {
     "laravel": {
-      "providers": ["MertAydin\\SystemMonitor\\SystemMonitorServiceProvider"]
+      "providers": [
+        "MertAydin\\SystemMonitor\\SystemMonitorServiceProvider"
+      ]
     }
   },
   "scripts": {
     "test": "phpunit",
     "format": "pint --test"
   },
-  "config": {"sort-packages": true},
+  "config": {
+    "sort-packages": true
+  },
   "minimum-stability": "stable",
   "prefer-stable": true,
   "homepage": "https://github.com/mertaydin/laravel-system-monitor",
@@ -43,5 +47,12 @@
     "issues": "https://github.com/mertaydin/laravel-system-monitor/issues",
     "source": "https://github.com/mertaydin/laravel-system-monitor"
   },
-  "keywords": ["laravel", "system-monitor", "monitoring", "health-check", "server", "dashboard"]
+  "keywords": [
+    "laravel",
+    "system-monitor",
+    "monitoring",
+    "health-check",
+    "server",
+    "dashboard"
+  ]
 }
