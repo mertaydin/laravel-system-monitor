@@ -71,4 +71,12 @@ return [
     'application_timezone_hint' => 'Laravel में कॉन्फ़िगर किया गया समय क्षेत्र',
     'move_up' => 'ऊपर ले जाएँ',
     'move_down' => 'नीचे ले जाएँ',
+    'refresh_interval' => 'स्वचालित रीफ़्रेश अंतराल',
+    'refresh_disabled' => 'बंद',
+    'seconds' => 'सेकंड',
+    'minute' => 'मिनट',
+    'minutes' => 'मिनट',
+    'next_refresh' => 'अगला रीफ़्रेश',
+    'refresh_now' => 'अभी रीफ़्रेश करें',
+    'drag_handle' => 'क्रम बदलने के लिए दबाकर खींचें',
 ];
