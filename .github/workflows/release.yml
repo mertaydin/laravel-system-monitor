@@ -3,13 +3,17 @@ name: Release
 on:
   push:
     branches:
-      - 'release/**'
-
-permissions:
-  contents: write
+      - main
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version (for example v0.1.0)
+        required: true
+        type: string
 
 jobs:
   tests:
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, 'Release ')) }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -43,7 +47,7 @@ jobs:
             laravel: '13.*'
             testbench: '11.*'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
@@ -53,15 +57,35 @@ jobs:
       - run: composer update --prefer-dist --no-interaction --no-audit
       - run: composer test
 
-  publish:
+  release:
     needs: tests
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || startsWith(github.event.head_commit.message, 'Release ')) }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
-      - name: Create Git tag and GitHub release
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          fetch-depth: 0
+      - name: Validate release version
+        id: release
         env:
-          GH_TOKEN: ${{ github.token }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          VERSION="${GITHUB_REF_NAME#release/}"
-          gh release view "$VERSION" >/dev/null 2>&1 || gh release create "$VERSION" --title "$VERSION" --generate-notes
-          git push origin --delete "$GITHUB_REF_NAME"
+          if [[ -n "$INPUT_VERSION" ]]; then
+            VERSION="$INPUT_VERSION"
+          else
+            VERSION="${COMMIT_MESSAGE#Release }"
+          fi
+
+          if [[ ! "$VERSION" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid release version: $VERSION"
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+      - name: Create GitHub release and tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "${{ steps.release.outputs.version }}" --target "${{ github.sha }}" --title "${{ steps.release.outputs.version }}" --notes-file CHANGELOG.md
