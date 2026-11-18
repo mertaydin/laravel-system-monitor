@@ -6,7 +6,7 @@ const grid=root.querySelector('.sm-grid'),panel=root.querySelector('.sm-settings
 const open=root.querySelector('[data-sm-open]'),close=root.querySelectorAll('[data-sm-close]');
 const themeToggle=root.querySelector('[data-sm-theme-toggle]'),languageSelect=root.querySelector('[data-sm-language-select]');
 const refreshButton=root.querySelector('[data-sm-refresh]'),countdown=root.querySelector('[data-sm-countdown]');
-const intervalSelect=root.querySelector('[data-sm-refresh-interval]');
+const intervalSelect=root.querySelector('[data-sm-refresh-interval]'),saveRefreshButton=root.querySelector('[data-sm-save-refresh]');
 const layoutKey='laravel-system-monitor:layout:v1',themeKey='laravel-system-monitor:theme:v1',refreshKey='laravel-system-monitor:refresh-interval:v1';
 const labels={up:root.dataset.moveUp||'Move up',down:root.dataset.moveDown||'Move down',drag:root.dataset.dragHandle||'Drag to reorder',disabled:'Automatic refresh disabled',next:countdown?.dataset.label||'Next refresh'};
 let layout={hidden:[],order:[]};try{layout=Object.assign(layout,JSON.parse(localStorage.getItem(layoutKey)||'{}'));}catch(e){}
@@ -43,9 +43,10 @@ root.querySelector('[data-sm-reset]')?.addEventListener('click',()=>{layout={hid
 let refreshInterval=60;try{const stored=localStorage.getItem(refreshKey);if(stored!==null)refreshInterval=Math.max(0,Number(stored)||0);}catch(e){}
 if(intervalSelect)intervalSelect.value=String(refreshInterval);
 let nextRefreshAt=refreshInterval?Date.now()+refreshInterval*1000:0;
-const refresh=()=>{if(refreshButton){refreshButton.disabled=true;refreshButton.textContent='…';}const url=new URL(window.location.href);url.searchParams.set('refresh','1');window.location.assign(url.toString());};
+const refresh=()=>{if(refreshButton){refreshButton.disabled=true;refreshButton.textContent='…';}const url=new URL(window.location.href);url.searchParams.set('refresh',String(Date.now()));window.location.href=url.toString();};
 refreshButton?.addEventListener('click',refresh);
-intervalSelect?.addEventListener('change',()=>{refreshInterval=Math.max(0,Number(intervalSelect.value)||0);try{localStorage.setItem(refreshKey,String(refreshInterval));}catch(e){}nextRefreshAt=refreshInterval?Date.now()+refreshInterval*1000:0;updateCountdown();});
+saveRefreshButton?.addEventListener('click',()=>{refreshInterval=Math.max(0,Number(intervalSelect?.value)||0);try{localStorage.setItem(refreshKey,String(refreshInterval));}catch(e){}nextRefreshAt=refreshInterval?Date.now()+refreshInterval*1000:0;updateCountdown();saveRefreshButton.textContent=saveRefreshButton.dataset.savedLabel||'Saved';});
+open?.addEventListener('click',()=>{if(intervalSelect)intervalSelect.value=String(refreshInterval);});
 const updateCountdown=()=>{if(!countdown)return;if(!refreshInterval){countdown.textContent=labels.disabled;return;}const remaining=Math.max(0,Math.ceil((nextRefreshAt-Date.now())/1000));countdown.textContent=labels.next+': '+remaining+'s';if(remaining===0)refresh();};
 updateCountdown();window.setInterval(updateCountdown,1000);
 
