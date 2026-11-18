@@ -20,6 +20,7 @@ class DashboardController extends Controller
             'snapshot' => $monitor->collect($request->boolean('refresh')),
             'title' => config('system-monitor.title', 'System Monitor'),
             'monitorLocale' => $locale,
+            'refreshInterval' => (int) $request->session()->get('system-monitor.refresh_interval', 60),
         ]);
     }
 }
