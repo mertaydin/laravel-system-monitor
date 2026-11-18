@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.1.17 - 2026-11-18
+
+- Isolate sound preferences per browser tab using session-scoped storage.
+- Add an independent sound toggle to every metric card; muted cards no longer trigger alerts.
+- Keep the dashboard-wide sound switch as a per-tab master control.
+
+
 All notable changes to this project will be documented in this file.
 
 ## v0.1.16 - 2026-11-18
