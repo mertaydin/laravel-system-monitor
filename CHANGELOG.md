@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.23 - 2026-11-18
+
+- Rebuild the README dashboard preview to reflect the current dashboard controls and monitoring cards, including per-card sound controls and refresh preferences.
+- Update dashboard asset cache-busting versions to v0.1.22.
+
+
 ## v0.1.22 - 2026-11-18
 
 - Refresh the README dashboard preview with the current server, PHP, database, cache, queue, and application health cards.
