@@ -71,8 +71,6 @@ public function boot(): void
 The callback is applied to dashboard routes, including the language preference endpoint. If no callback is registered, the package keeps its configured middleware behavior (by default, `web` and `auth`).
 
 
-The dashboard uses the `web` and `auth` middleware by default. You can add a request-based authorization callback to restrict access to administrators.
-
 ### Personalize the dashboard
 
 Click **Customize** to show or hide cards. Drag and drop cards to change their order. The selected visibility and order are saved in the current browser using local storage; they are not shared between users or browsers. Use **Reset layout** to restore the default arrangement.\n\nUse the language selector to choose English, Turkish, Arabic, Spanish, Hindi or Simplified Chinese. The selection is stored in the authenticated session. Arabic uses right-to-left layout. Use the sun/moon control to switch between dark and light themes; the theme is stored locally in the browser.
