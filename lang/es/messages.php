@@ -79,4 +79,5 @@ return [
     'next_refresh' => 'Próxima actualización',
     'refresh_now' => 'Actualizar ahora',
     'drag_handle' => 'Mantén pulsado y arrastra para reordenar',
+    'save' => 'Guardar',
 ];
