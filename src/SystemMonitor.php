@@ -4,6 +4,7 @@ namespace MertAydin\SystemMonitor;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class SystemMonitor
 {
@@ -15,6 +16,7 @@ class SystemMonitor
             'php' => config('system-monitor.collectors.php') ? $this->php() : [],
             'laravel' => config('system-monitor.collectors.laravel') ? $this->laravel() : [],
             'database' => config('system-monitor.collectors.database') ? $this->database() : [],
+            'cache_queue' => config('system-monitor.collectors.cache_queue') ? $this->cacheQueue() : [],
             'security' => config('system-monitor.collectors.security') ? $this->security() : [],
         ];
 
@@ -149,6 +151,45 @@ class SystemMonitor
                 'message' => 'Database connection failed. Check the application log.',
             ];
         }
+    }
+
+    protected function cacheQueue(): array
+    {
+        $cacheDriver = config('cache.default');
+        try {
+            Cache::store()->get('__laravel_system_monitor_health_probe__');
+            $cache = ['driver' => $cacheDriver, 'status' => 'connected'];
+        } catch (\Throwable $exception) {
+            report($exception);
+            $cache = ['driver' => $cacheDriver, 'status' => 'error'];
+        }
+
+        $queueConnection = config('queue.default');
+        $queueDriver = config('queue.connections.'.$queueConnection.'.driver');
+        $queue = [
+            'connection' => $queueConnection,
+            'driver' => $queueDriver,
+            'pending_jobs' => null,
+            'failed_jobs' => null,
+        ];
+
+        try {
+            if ($queueDriver === 'database') {
+                $jobsTable = config('queue.connections.'.$queueConnection.'.table', 'jobs');
+                if (Schema::hasTable($jobsTable)) {
+                    $queue['pending_jobs'] = DB::table($jobsTable)->count();
+                }
+            }
+
+            if (Schema::hasTable('failed_jobs')) {
+                $queue['failed_jobs'] = DB::table('failed_jobs')->count();
+            }
+        } catch (\Throwable $exception) {
+            report($exception);
+            $queue['status'] = 'unavailable';
+        }
+
+        return ['cache' => $cache, 'queue' => $queue];
     }
 
     protected function security(): array
