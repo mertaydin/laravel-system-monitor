@@ -7,7 +7,7 @@ use MertAydin\SystemMonitor\SystemMonitor;
 
 class DashboardController extends Controller
 {
-    public function __invoke(SystemMonitor $monitor)
+    public function __invoke(\Illuminate\Http\Request $request, SystemMonitor $monitor)
     {
         abort_unless(config('system-monitor.enabled', true), 404);
 
@@ -17,7 +17,7 @@ class DashboardController extends Controller
         app()->setLocale($locale);
 
         return view('system-monitor::dashboard', [
-            'snapshot' => $monitor->collect(),
+            'snapshot' => $monitor->collect($request->boolean('refresh')),
             'title' => config('system-monitor.title', 'System Monitor'),
             'monitorLocale' => $locale,
         ]);
