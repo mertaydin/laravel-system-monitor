@@ -24,3 +24,20 @@
 html[dir="rtl"] .sm-health-dot{margin-right:0;margin-left:9px}
 html[dir="rtl"] .sm-header,html[dir="rtl"] .sm-actions,html[dir="rtl"] .sm-brand{direction:rtl}
 @media(max-width:700px){.sm-actions{flex-wrap:wrap;justify-content:flex-end}.sm-select{max-width:112px}}
+
+/* Fluid full-width dashboard layout */
+.sm-wrap{width:100%;max-width:none;margin:0;padding:clamp(18px,2vw,36px)}
+.sm-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:clamp(12px,.9vw,18px)}
+.sm-card{min-height:145px;padding:clamp(16px,1.2vw,22px)}
+.sm-settings-panel{width:min(560px,100%)}
+.sm-widget-option{gap:12px}
+.sm-widget-option-main{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.sm-widget-option-main span{overflow-wrap:anywhere}
+.sm-widget-option-actions{display:flex;gap:5px;flex:none}
+.sm-widget-option-actions button{border:1px solid var(--sm-border);background:var(--sm-panel);color:var(--sm-text);border-radius:6px;width:30px;height:30px;cursor:pointer}
+.sm-widget-option-actions button:hover{border-color:var(--sm-blue)}
+.sm-widget-option-actions button:disabled{opacity:.3;cursor:not-allowed}
+.sm-body[data-theme="light"] .sm-widget-option-actions button{background:#f7f9fc}
+@media(min-width:1700px){.sm-grid{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}}
+@media(max-width:700px){.sm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:420px){.sm-grid{grid-template-columns:1fr}}
