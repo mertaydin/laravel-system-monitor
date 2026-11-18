@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.20 - 2026-11-18
+
+- Force per-card sound controls to remain visible and clickable across dashboard theme and button styles.
+- Increase sound control stacking order and touch target size.
+
 ## v0.1.19 - 2026-11-18
 
 - Replace the rotating card border with a thicker neon segment that travels around the fixed card outline.
