@@ -41,3 +41,16 @@ html[dir="rtl"] .sm-header,html[dir="rtl"] .sm-actions,html[dir="rtl"] .sm-brand
 @media(min-width:1700px){.sm-grid{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}}
 @media(max-width:700px){.sm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:420px){.sm-grid{grid-template-columns:1fr}}
+
+/* Refresh controls and touch sorting */
+.sm-refresh-status{display:flex;align-items:center;gap:9px;color:var(--sm-muted);font-size:12px;white-space:nowrap}
+.sm-refresh-button{padding:7px 10px}
+.sm-refresh-button:disabled{opacity:.6;cursor:wait}
+.sm-refresh-setting{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 2px;margin-bottom:8px;border-bottom:1px solid var(--sm-border);font-size:13px}
+.sm-refresh-setting label{font-weight:600}
+.sm-drag-handle{border:0;background:transparent;color:var(--sm-muted);font-size:19px;line-height:1;padding:2px 6px;margin-left:auto;cursor:grab;touch-action:none;user-select:none}
+.sm-drag-handle:active{cursor:grabbing;color:var(--sm-blue)}
+.sm-card-head{gap:7px}
+.sm-body[data-theme="light"] .sm-refresh-setting{border-color:#e5eaf0}
+@media(max-width:900px){.sm-header{flex-wrap:wrap}.sm-actions{flex-wrap:wrap}.sm-refresh-status{order:3;width:100%;justify-content:flex-end}}
+@media(max-width:520px){.sm-refresh-status{justify-content:space-between}.sm-updated{display:block}}
