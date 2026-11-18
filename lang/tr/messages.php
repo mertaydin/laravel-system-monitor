@@ -71,4 +71,12 @@ return [
     'application_timezone_hint' => 'Laravel yapılandırılmış saat dilimi',
     'move_up' => 'Yukarı taşı',
     'move_down' => 'Aşağı taşı',
+    'refresh_interval' => 'Otomatik yenileme aralığı',
+    'refresh_disabled' => 'Kapalı',
+    'seconds' => 'saniye',
+    'minute' => 'dakika',
+    'minutes' => 'dakika',
+    'next_refresh' => 'Sonraki yenileme',
+    'refresh_now' => 'Şimdi yenile',
+    'drag_handle' => 'Sıralamak için basılı tutup sürükleyin',
 ];
