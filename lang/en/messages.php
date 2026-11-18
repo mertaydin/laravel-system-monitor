@@ -79,4 +79,5 @@ return [
     'next_refresh' => 'Next refresh',
     'refresh_now' => 'Refresh now',
     'drag_handle' => 'Hold and drag to reorder',
+    'save' => 'Save',
 ];
