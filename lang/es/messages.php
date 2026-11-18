@@ -71,4 +71,12 @@ return [
     'application_timezone_hint' => 'Zona horaria configurada en Laravel',
     'move_up' => 'Mover arriba',
     'move_down' => 'Mover abajo',
+    'refresh_interval' => 'Intervalo de actualización automática',
+    'refresh_disabled' => 'Desactivado',
+    'seconds' => 'segundos',
+    'minute' => 'minuto',
+    'minutes' => 'minutos',
+    'next_refresh' => 'Próxima actualización',
+    'refresh_now' => 'Actualizar ahora',
+    'drag_handle' => 'Mantén pulsado y arrastra para reordenar',
 ];
