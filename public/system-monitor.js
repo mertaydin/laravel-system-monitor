@@ -6,8 +6,9 @@ const grid=root.querySelector('.sm-grid'),panel=root.querySelector('.sm-settings
 const open=root.querySelector('[data-sm-open]'),close=root.querySelectorAll('[data-sm-close]');
 const themeToggle=root.querySelector('[data-sm-theme-toggle]'),languageSelect=root.querySelector('[data-sm-language-select]');
 const refreshButton=root.querySelector('[data-sm-refresh]'),countdown=root.querySelector('[data-sm-countdown]');
+const refreshForm=root.querySelector('.sm-refresh-form'),soundToggle=root.querySelector('[data-sm-sound-toggle]');
 const intervalSelect=root.querySelector('[data-sm-refresh-interval]'),saveRefreshButton=root.querySelector('[data-sm-save-refresh]');
-const layoutKey='laravel-system-monitor:layout:v1',themeKey='laravel-system-monitor:theme:v1',refreshKey='laravel-system-monitor:refresh-interval:v1';
+const layoutKey='laravel-system-monitor:layout:v1',themeKey='laravel-system-monitor:theme:v1',refreshKey='laravel-system-monitor:refresh-interval:v1',soundKey='laravel-system-monitor:sound:v1';
 const labels={up:root.dataset.moveUp||'Move up',down:root.dataset.moveDown||'Move down',drag:root.dataset.dragHandle||'Drag to reorder',disabled:'Automatic refresh disabled',next:countdown?.dataset.label||'Next refresh'};
 let layout={hidden:[],order:[]};try{layout=Object.assign(layout,JSON.parse(localStorage.getItem(layoutKey)||'{}'));}catch(e){}
 const cards=[...grid.querySelectorAll('[data-widget]')],byId=id=>cards.find(card=>card.dataset.widget===id);
@@ -52,6 +53,20 @@ const updateCountdown=()=>{
 };
 updateCountdown();
 if(refreshInterval)window.setInterval(updateCountdown,1000);
+refreshForm?.addEventListener('submit',()=>{const stamp=refreshForm.querySelector('input[name="_sm_refresh"]');if(stamp)stamp.value=String(Date.now());});
+let soundEnabled=true,audioContext=null,alertSoundTimer=null;
+try{soundEnabled=localStorage.getItem(soundKey)!=='off';}catch(e){}
+const hasUnhealthyMetric=()=>[...root.querySelectorAll('.sm-card')].some(card=>card.querySelector('.sm-warn,.sm-bad,.warn,.bad'))||/check required/i.test(root.querySelector('.sm-health')?.textContent||'');
+const setSoundButton=()=>{if(soundToggle){soundToggle.textContent=soundEnabled?'♫ Ses: Açık':'♫ Ses: Kapalı';soundToggle.setAttribute('aria-pressed',String(soundEnabled));}};
+const playHealthAlert=()=>{if(!audioContext||audioContext.state!=='running'||!soundEnabled||!hasUnhealthyMetric())return;const startAt=audioContext.currentTime;[880,740,880,740,880].forEach((frequency,index)=>{const oscillator=audioContext.createOscillator(),gain=audioContext.createGain(),start=startAt+index*.24;oscillator.type='sine';oscillator.frequency.setValueAtTime(frequency,start);gain.gain.setValueAtTime(.0001,start);gain.gain.exponentialRampToValueAtTime(.12,start+.025);gain.gain.exponentialRampToValueAtTime(.0001,start+.19);oscillator.connect(gain);gain.connect(audioContext.destination);oscillator.start(start);oscillator.stop(start+.2);});};
+const unlockAudio=async()=>{try{const AudioContextClass=window.AudioContext||window.webkitAudioContext;if(!AudioContextClass)return;audioContext??=new AudioContextClass();if(audioContext.state==='suspended')await audioContext.resume();if(hasUnhealthyMetric()&&soundEnabled)playHealthAlert();}catch(error){console.warn('[System Monitor] Audio is unavailable:',error);}};
+const syncAlertSound=()=>{if(!soundEnabled||!hasUnhealthyMetric()){if(alertSoundTimer){window.clearInterval(alertSoundTimer);alertSoundTimer=null;}return;}if(!alertSoundTimer){playHealthAlert();alertSoundTimer=window.setInterval(()=>{if(!hasUnhealthyMetric()){syncAlertSound();return;}playHealthAlert();},12000);}};
+soundToggle?.addEventListener('click',async()=>{soundEnabled=!soundEnabled;try{localStorage.setItem(soundKey,soundEnabled?'on':'off');}catch(e){}setSoundButton();if(soundEnabled)await unlockAudio();else syncAlertSound();});
+setSoundButton();
+document.addEventListener('pointerdown',unlockAudio,{once:true,passive:true});
+document.addEventListener('keydown',unlockAudio,{once:true});
+syncAlertSound();
+if(soundEnabled&&hasUnhealthyMetric())unlockAudio();
 
 // Native drag-and-drop for desktop.
 let dragged=null;
