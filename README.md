@@ -22,7 +22,7 @@ A lightweight, framework-native monitoring dashboard for Laravel. Get a quick vi
 - **Database:** connection status, driver and a lightweight `SELECT 1` latency check.
 - **Cache and queue:** cache-store health, queue driver, database queue depth and failed-job count when those tables exist.
 - **Basic security checks:** APP_KEY presence, debug mode and HTTPS configuration derived from APP_URL.
-- **Customizable dashboard:** hide or show individual metric cards, drag cards to reorder them, and reset the layout.
+- **Customizable dashboard:** hide or show individual metric cards, drag cards to reorder them, and reset the layout.\n- **Six dashboard languages:** English, Turkish, Arabic (RTL), Spanish, Hindi and Simplified Chinese, with a per-browser session preference.\n- **Dark and light themes:** switch between night and day modes; the selected theme is remembered in the current browser.
 - **No optional service dependency:** Redis, Horizon, cloud storage and QR integrations are not required.
 - **Low overhead:** collector snapshot caching is enabled by default.
 - **Read-only:** the package does not run arbitrary shell commands or modify application data.
@@ -38,7 +38,7 @@ A lightweight, framework-native monitoring dashboard for Laravel. Get a quick vi
 composer require mertaydin/laravel-system-monitor
 
 php artisan vendor:publish --tag=system-monitor-config
-php artisan vendor:publish --tag=system-monitor-assets
+php artisan vendor:publish --tag=system-monitor-assets\nphp artisan vendor:publish --tag=system-monitor-translations
 ```
 
 The service provider is registered automatically through Laravel package discovery.
@@ -55,7 +55,7 @@ The dashboard uses the `web` and `auth` middleware by default. Keep it protected
 
 ### Personalize the dashboard
 
-Click **Customize** to show or hide cards. Drag and drop cards to change their order. The selected visibility and order are saved in the current browser using local storage; they are not shared between users or browsers. Use **Reset layout** to restore the default arrangement.
+Click **Customize** to show or hide cards. Drag and drop cards to change their order. The selected visibility and order are saved in the current browser using local storage; they are not shared between users or browsers. Use **Reset layout** to restore the default arrangement.\n\nUse the language selector to choose English, Turkish, Arabic, Spanish, Hindi or Simplified Chinese. The selection is stored in the authenticated session. Arabic uses right-to-left layout. Use the sun/moon control to switch between dark and light themes; the theme is stored locally in the browser.
 
 ## Configuration
 
