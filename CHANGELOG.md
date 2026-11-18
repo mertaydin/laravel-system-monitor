@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.1.16 - 2026-11-18
+
+- Add repeating audible alerts while monitored metrics are warning or critical; stop when the dashboard returns to healthy.
+- Add a dashboard sound toggle and persist the user's sound preference.
+- Make manual refresh URLs unique to avoid browser and proxy cache hits.
+- Bump dashboard CSS and JavaScript cache-busting versions.
+- Keep refresh interval saves on a CSRF-protected form and return to the dashboard after saving.
+
 ## v0.1.15 - 2026-11-18
 
 - Replaced JavaScript-dependent manual refresh with a native GET form.
