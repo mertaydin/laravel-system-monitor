@@ -7,10 +7,13 @@ use MertAydin\SystemMonitor\Http\Middleware\AuthorizeDashboard;
 
 Route::group([
     'prefix' => trim(config('system-monitor.path', 'system-monitor'), '/'),
-    'middleware' => array_merge(
-        (array) config('system-monitor.middleware', ['web', 'auth']),
+    // Session-backed preferences and CSRF protection require the web middleware,
+    // even when an application overrides the package's additional middleware.
+    'middleware' => array_values(array_unique(array_merge(
+        ['web'],
+        (array) config('system-monitor.middleware', ['auth']),
         [AuthorizeDashboard::class],
-    ),
+    ))),
     'as' => 'system-monitor.',
 ], function (): void {
     Route::get('/', DashboardController::class)
