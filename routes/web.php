@@ -6,7 +6,7 @@ use MertAydin\SystemMonitor\Http\Controllers\DashboardController;
 
 Route::group([
     'prefix' => trim(config('system-monitor.path', 'system-monitor'), '/'),
-    'middleware' => config('system-monitor.middleware', ['web', 'auth']),
+    'middleware' => array_merge(\n        (array) config('system-monitor.middleware', ['web', 'auth']),\n        [\\MertAydin\\SystemMonitor\\Http\\Middleware\\AuthorizeDashboard::class],\n    ),
     'as' => 'system-monitor.',
 ], function (): void {
     Route::get('/', DashboardController::class)
