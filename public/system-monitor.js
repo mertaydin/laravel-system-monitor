@@ -7,7 +7,7 @@ const open=root.querySelector('[data-sm-open]'),close=root.querySelectorAll('[da
 const themeToggle=root.querySelector('[data-sm-theme-toggle]'),languageSelect=root.querySelector('[data-sm-language-select]');
 const refreshButton=root.querySelector('[data-sm-refresh]'),countdown=root.querySelector('[data-sm-countdown]');
 const intervalSelect=root.querySelector('[data-sm-refresh-interval]'),saveRefreshButton=root.querySelector('[data-sm-save-refresh]');
-const layoutKey='laravel-system-monitor:layout:v1',themeKey='laravel-system-monitor:theme:v1',refreshKey='laravel-system-monitor:refresh-interval:v1';
+const layoutKey='laravel-system-monitor:layout:v1',themeKey='laravel-system-monitor:theme:v1';
 const labels={up:root.dataset.moveUp||'Move up',down:root.dataset.moveDown||'Move down',drag:root.dataset.dragHandle||'Drag to reorder',disabled:'Automatic refresh disabled',next:countdown?.dataset.label||'Next refresh'};
 let layout={hidden:[],order:[]};try{layout=Object.assign(layout,JSON.parse(localStorage.getItem(layoutKey)||'{}'));}catch(e){}
 const cards=[...grid.querySelectorAll('[data-widget]')],byId=id=>cards.find(card=>card.dataset.widget===id);
@@ -39,13 +39,13 @@ close.forEach(el=>el.addEventListener('click',()=>{panel.classList.remove('open'
 panel?.addEventListener('click',e=>{if(e.target===panel){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');}});
 root.querySelector('[data-sm-reset]')?.addEventListener('click',()=>{layout={hidden:[],order:[]};apply();save();renderOptions();});
 
-// Refresh preferences are browser-local; the refresh=1 request bypasses the server snapshot cache.
-let refreshInterval=60;try{const stored=localStorage.getItem(refreshKey);if(stored!==null)refreshInterval=Math.max(0,Number(stored)||0);}catch(e){}
+// Refresh preferences are stored in the authenticated Laravel session.
+let refreshInterval=Math.max(0,Number(root.dataset.refreshInterval??60)||0);
 if(intervalSelect)intervalSelect.value=String(refreshInterval);
 let nextRefreshAt=refreshInterval?Date.now()+refreshInterval*1000:0;
 const refresh=()=>{if(refreshButton){refreshButton.disabled=true;refreshButton.textContent='…';}const url=new URL(window.location.href);url.searchParams.set('refresh',String(Date.now()));window.location.href=url.toString();};
 refreshButton?.addEventListener('click',refresh);
-saveRefreshButton?.addEventListener('click',()=>{refreshInterval=Math.max(0,Number(intervalSelect?.value)||0);try{localStorage.setItem(refreshKey,String(refreshInterval));}catch(e){}nextRefreshAt=refreshInterval?Date.now()+refreshInterval*1000:0;updateCountdown();saveRefreshButton.textContent=saveRefreshButton.dataset.savedLabel||'Saved';});
+saveRefreshButton?.addEventListener('click',async()=>{if(!intervalSelect||!saveRefreshButton)return;const selected=Math.max(0,Number(intervalSelect.value)||0);const token=root.querySelector('input[name="_token"]')?.value;if(!token)return;saveRefreshButton.disabled=true;const originalLabel=saveRefreshButton.textContent;saveRefreshButton.textContent=saveRefreshButton.dataset.savingLabel||'Saving…';try{const response=await fetch(root.dataset.refreshSaveUrl,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json','X-CSRF-TOKEN':token,'X-Requested-With':'XMLHttpRequest'},body:JSON.stringify({interval:selected})});if(!response.ok)throw new Error('Unable to save refresh interval');const result=await response.json();refreshInterval=Math.max(0,Number(result.interval)||0);root.dataset.refreshInterval=String(refreshInterval);nextRefreshAt=refreshInterval?Date.now()+refreshInterval*1000:0;updateCountdown();saveRefreshButton.textContent=saveRefreshButton.dataset.savedLabel||'Saved';}catch(error){saveRefreshButton.textContent=saveRefreshButton.dataset.errorLabel||'Save failed';}finally{saveRefreshButton.disabled=false;window.setTimeout(()=>{if(saveRefreshButton.textContent!==(saveRefreshButton.dataset.savedLabel||'Saved'))saveRefreshButton.textContent=originalLabel;},2500);}});
 open?.addEventListener('click',()=>{if(intervalSelect)intervalSelect.value=String(refreshInterval);});
 const updateCountdown=()=>{if(!countdown)return;if(!refreshInterval){countdown.textContent=labels.disabled;return;}const remaining=Math.max(0,Math.ceil((nextRefreshAt-Date.now())/1000));countdown.textContent=labels.next+': '+remaining+'s';if(remaining===0)refresh();};
 updateCountdown();window.setInterval(updateCountdown,1000);
