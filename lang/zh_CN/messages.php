@@ -79,4 +79,5 @@ return [
     'next_refresh' => '下次刷新',
     'refresh_now' => '立即刷新',
     'drag_handle' => '按住并拖动以重新排序',
+    'save' => '保存',
 ];
