@@ -3,10 +3,14 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use MertAydin\SystemMonitor\Http\Controllers\DashboardController;
+use MertAydin\SystemMonitor\Http\Middleware\AuthorizeDashboard;
 
 Route::group([
     'prefix' => trim(config('system-monitor.path', 'system-monitor'), '/'),
-    'middleware' => array_merge(\n        (array) config('system-monitor.middleware', ['web', 'auth']),\n        [\\MertAydin\\SystemMonitor\\Http\\Middleware\\AuthorizeDashboard::class],\n    ),
+    'middleware' => array_merge(
+        (array) config('system-monitor.middleware', ['web', 'auth']),
+        [AuthorizeDashboard::class],
+    ),
     'as' => 'system-monitor.',
 ], function (): void {
     Route::get('/', DashboardController::class)
