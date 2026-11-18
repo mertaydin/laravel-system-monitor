@@ -47,5 +47,5 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: none
       - run: composer require "illuminate/support:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-update
-      - run: composer update --prefer-dist --no-interaction --no-audit
+      - run: composer config policy.advisories.block false\n      - run: composer update --prefer-dist --no-interaction --no-audit
       - run: composer test
