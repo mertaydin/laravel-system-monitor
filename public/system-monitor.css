@@ -68,8 +68,9 @@ html[dir="rtl"] .sm-header,html[dir="rtl"] .sm-actions,html[dir="rtl"] .sm-brand
 html[dir="rtl"] .sm-card-sound-toggle{right:auto;left:12px}
 
 
-/* Animated neon border identifies the metric card producing an audible alert. */
-.sm-card.sm-alert-active{z-index:1;border-color:transparent;box-shadow:0 0 8px rgba(255,35,55,.55),0 0 22px rgba(255,20,45,.28)}
-.sm-card.sm-alert-active::after{content:"";position:absolute;inset:-2px;padding:2px;border-radius:inherit;pointer-events:none;background:conic-gradient(from 0deg,transparent 0deg 250deg,#ff263f 285deg,#fff 300deg,#ff263f 315deg,transparent 350deg);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:sm-neon-travel 1.8s linear infinite;filter:drop-shadow(0 0 5px #ff263f)}
-@keyframes sm-neon-travel{to{transform:rotate(360deg)}}
+/* A thick red neon segment travels around the card border; the card itself stays still. */
+@property --sm-neon-angle{syntax:"<angle>";inherits:false;initial-value:0deg}
+.sm-card.sm-alert-active{z-index:1;border-color:rgba(255,35,55,.55);box-shadow:0 0 8px rgba(255,35,55,.45),0 0 22px rgba(255,20,45,.22)}
+.sm-card.sm-alert-active::after{content:"";position:absolute;inset:-3px;padding:4px;border-radius:inherit;pointer-events:none;background:conic-gradient(from var(--sm-neon-angle),transparent 0deg 292deg,#ff263f 304deg,#fff 312deg,#ff263f 320deg,transparent 334deg 360deg);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;filter:drop-shadow(0 0 5px #ff263f) drop-shadow(0 0 9px rgba(255,20,45,.75));animation:sm-neon-travel 2.2s linear infinite}
+@keyframes sm-neon-travel{to{--sm-neon-angle:360deg}}
 @media(prefers-reduced-motion:reduce){.sm-card.sm-alert-active::after{animation-duration:8s}}
