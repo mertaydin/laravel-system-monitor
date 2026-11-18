@@ -8,9 +8,9 @@ use MertAydin\SystemMonitor\SystemMonitor;
 
 class AuthorizeDashboard
 {
-    public function handle(Request $request, Closure $next, SystemMonitor $monitor)
+    public function handle(Request $request, Closure $next)
     {
-        abort_unless($monitor->allows($request), 403);
+        abort_unless(app(SystemMonitor::class)->allows($request), 403);
 
         return $next($request);
     }
