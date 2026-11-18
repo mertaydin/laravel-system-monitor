@@ -7,6 +7,28 @@ use Orchestra\Testbench\TestCase;
 
 class SystemMonitorTest extends TestCase
 {
+
+    public function test_authorization_is_allowed_by_default_when_no_callback_is_registered(): void
+    {
+        $monitor = new SystemMonitor();
+
+        $this->assertTrue($monitor->allows(Request::create('/system-monitor')));
+    }
+
+    public function test_authorization_callback_can_allow_or_deny_a_request(): void
+    {
+        $request = Request::create('/system-monitor');
+        $monitor = new SystemMonitor();
+
+        $monitor->auth(fn (Request $request) => $request->path() === 'system-monitor');
+
+        $this->assertTrue($monitor->allows($request));
+
+        $monitor->auth(fn () => false);
+
+        $this->assertFalse($monitor->allows($request));
+    }
+
     public function test_it_returns_the_configured_collector_sections(): void
     {
         config([
