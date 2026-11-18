@@ -25,6 +25,10 @@ class SystemMonitorServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../resources/views' => resource_path('views/vendor/system-monitor'),
             ], 'system-monitor-views');
+
+            $this->publishes([
+                __DIR__.'/../public' => public_path('vendor/system-monitor'),
+            ], 'system-monitor-assets');
         }
     }
 }
