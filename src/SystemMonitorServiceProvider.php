@@ -1,15 +1,14 @@
 <?php
 
-namespace MertAydin\\SystemMonitor;
+namespace MertAydin\SystemMonitor;
 
-use Illuminate\\Support\\ServiceProvider;
+use Illuminate\Support\ServiceProvider;
 
 class SystemMonitorServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/system-monitor.php', 'system-monitor');
-
         $this->app->singleton(SystemMonitor::class);
     }
 
