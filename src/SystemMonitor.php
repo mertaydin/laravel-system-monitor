@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 
 class SystemMonitor
 {
-    public function collect(): array
+    public function collect(bool $forceRefresh = false): array
     {
         $callback = fn () => [
             'collected_at' => now()->toIso8601String(),
@@ -20,7 +20,7 @@ class SystemMonitor
             'security' => config('system-monitor.collectors.security') ? $this->security() : [],
         ];
 
-        if (! config('system-monitor.cache.enabled', true)) {
+        if ($forceRefresh || ! config('system-monitor.cache.enabled', true)) {
             return $callback();
         }
 
