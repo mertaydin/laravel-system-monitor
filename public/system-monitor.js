@@ -39,18 +39,19 @@ close.forEach(el=>el.addEventListener('click',()=>{panel.classList.remove('open'
 panel?.addEventListener('click',e=>{if(e.target===panel){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');}});
 root.querySelector('[data-sm-reset]')?.addEventListener('click',()=>{layout={hidden:[],order:[]};apply();save();renderOptions();});
 
-// Refresh preferences are stored in the authenticated Laravel session.
-let refreshInterval=Math.max(0,Number(root.dataset.refreshInterval??60)||0);
-try{const storedInterval=localStorage.getItem(refreshKey);if(storedInterval!==null&&[0,15,30,60,300,600].includes(Number(storedInterval)))refreshInterval=Number(storedInterval);}catch(e){}
+// The server-rendered page controls refreshes. This countdown is display-only;
+// automatic refresh itself is handled by the browser's native meta refresh.
+const refreshInterval=Math.max(0,Number(root.dataset.refreshInterval??60)||0);
 if(intervalSelect)intervalSelect.value=String(refreshInterval);
-root.dataset.refreshInterval=String(refreshInterval);
 let nextRefreshAt=refreshInterval?Date.now()+refreshInterval*1000:0;
-const refresh=()=>{if(refreshButton){refreshButton.disabled=true;refreshButton.textContent='…';}const url=new URL(window.location.href);url.searchParams.set('refresh','1');url.searchParams.set('_sm_refresh',String(Date.now()));window.location.href=url.toString();};
-refreshButton?.addEventListener('click',refresh);
-saveRefreshButton?.addEventListener('click',async()=>{if(!intervalSelect||!saveRefreshButton)return;const selected=Math.max(0,Number(intervalSelect.value)||0);const token=root.querySelector('input[name="_token"]')?.value;saveRefreshButton.disabled=true;const originalLabel=saveRefreshButton.textContent;saveRefreshButton.textContent=saveRefreshButton.dataset.savingLabel||'Saving…';try{localStorage.setItem(refreshKey,String(selected));}catch(e){}refreshInterval=selected;root.dataset.refreshInterval=String(selected);nextRefreshAt=selected?Date.now()+selected*1000:0;updateCountdown();try{if(!token)throw new Error('Missing CSRF token');const response=await fetch(root.dataset.refreshSaveUrl,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','Accept':'application/json','X-CSRF-TOKEN':token,'X-Requested-With':'XMLHttpRequest'},body:JSON.stringify({interval:selected})});if(!response.ok)throw new Error('Unable to save refresh interval');const result=await response.json();refreshInterval=Math.max(0,Number(result.interval)||0);root.dataset.refreshInterval=String(refreshInterval);nextRefreshAt=refreshInterval?Date.now()+refreshInterval*1000:0;updateCountdown();saveRefreshButton.textContent=saveRefreshButton.dataset.savedLabel||'Saved';}catch(error){saveRefreshButton.textContent=saveRefreshButton.dataset.savedLabel||'Saved locally';}finally{saveRefreshButton.disabled=false;window.setTimeout(()=>{if(saveRefreshButton.textContent!==(saveRefreshButton.dataset.savedLabel||'Saved'))saveRefreshButton.textContent=originalLabel;},2500);}});
-open?.addEventListener('click',()=>{if(intervalSelect)intervalSelect.value=String(refreshInterval);});
-const updateCountdown=()=>{if(!countdown)return;if(!refreshInterval){countdown.textContent=labels.disabled;return;}const remaining=Math.max(0,Math.ceil((nextRefreshAt-Date.now())/1000));countdown.textContent=labels.next+': '+remaining+'s';if(remaining===0)refresh();};
-updateCountdown();window.setInterval(updateCountdown,1000);
+const updateCountdown=()=>{
+ if(!countdown)return;
+ if(!refreshInterval){countdown.textContent=labels.disabled;return;}
+ const remaining=Math.max(0,Math.ceil((nextRefreshAt-Date.now())/1000));
+ countdown.textContent=labels.next+': '+remaining+'s';
+};
+updateCountdown();
+if(refreshInterval)window.setInterval(updateCountdown,1000);
 
 // Native drag-and-drop for desktop.
 let dragged=null;
