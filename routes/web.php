@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\\Http\\Request;
-use Illuminate\\Support\\Facades\\Route;
-use MertAydin\\SystemMonitor\\Http\\Controllers\\DashboardController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use MertAydin\SystemMonitor\Http\Controllers\DashboardController;
 
 Route::group([
     'prefix' => trim(config('system-monitor.path', 'system-monitor'), '/'),
