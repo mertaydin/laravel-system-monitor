@@ -51,7 +51,27 @@ Open:
 /system-monitor
 ```
 
-The dashboard uses the `web` and `auth` middleware by default. Keep it protected and add an administrator authorization middleware appropriate for your application.
+### Authorization
+
+Register an authorization callback in your application's `AppServiceProvider`. Return `true` to allow access and `false` to respond with HTTP 403. The callback receives the current request.
+
+```php
+use Illuminate\\Http\\Request;
+use MertAydin\\SystemMonitor\\Facades\\SystemMonitor;
+
+public function boot(): void
+{
+    SystemMonitor::auth(function (Request $request) {
+        return $request->user()
+            && $request->user()->hasRole('SuperAdmin');
+    });
+}
+```
+
+The callback is applied to dashboard routes, including the language preference endpoint. If no callback is registered, the package keeps its configured middleware behavior (by default, `web` and `auth`).
+
+
+The dashboard uses the `web` and `auth` middleware by default. You can add a request-based authorization callback to restrict access to administrators.
 
 ### Personalize the dashboard
 
@@ -89,7 +109,7 @@ return [
 | --- | --- | --- |
 | `enabled` | `true` | Enables or disables the dashboard route. |
 | `path` | `system-monitor` | Dashboard URL prefix. |
-| `middleware` | `['web', 'auth']` | Route middleware. Add your admin authorization middleware here. |
+| `middleware` | `['web', 'auth']` | Route middleware. An optional `SystemMonitor::auth()` callback adds an application-specific authorization check. |
 | `title` | `System Monitor` | Dashboard title. |
 | `cache.enabled` | `true` | Enables cached collector snapshots. |
 | `cache.store` | Default cache | Optional Laravel cache store name. |
