@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.1.8 - 2026-11-18
+
+- Publish the dashboard authorization callback and facade, with middleware enforcement and authorization tests.
+
 ## 0.1.1 - 2026-11-18
 
 - Added English, Turkish, Arabic, Spanish, Hindi and Simplified Chinese dashboard translations.
