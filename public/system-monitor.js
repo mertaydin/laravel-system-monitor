@@ -7,6 +7,7 @@ const panel=root.querySelector('.sm-settings');
 const open=root.querySelector('[data-sm-open]');
 const close=root.querySelectorAll('[data-sm-close]');
 const themeToggle=root.querySelector('[data-sm-theme-toggle]');
+const languageSelect=root.querySelector('[data-sm-language-select]');
 const layoutKey='laravel-system-monitor:layout:v1';
 const themeKey='laravel-system-monitor:theme:v1';
 let layout={hidden:[],order:[]};
@@ -41,6 +42,7 @@ const setTheme=theme=>{
 let savedTheme='dark';
 try{savedTheme=localStorage.getItem(themeKey)||'dark';}catch(e){}
 setTheme(savedTheme);
+languageSelect?.addEventListener('change',()=>languageSelect.form?.submit());
 themeToggle?.addEventListener('click',()=>{
  const next=document.body.dataset.theme==='dark'?'light':'dark';
  setTheme(next);
