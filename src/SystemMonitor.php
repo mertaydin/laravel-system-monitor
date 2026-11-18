@@ -2,12 +2,38 @@
 
 namespace MertAydin\SystemMonitor;
 
+use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class SystemMonitor
 {
+    protected ?Closure $authorizationCallback = null;
+
+    /**
+     * Register a callback that decides who may access the dashboard.
+     */
+    public function auth(callable $callback): static
+    {
+        $this->authorizationCallback = Closure::fromCallable($callback);
+
+        return $this;
+    }
+
+    /**
+     * Determine whether the given request may access the dashboard.
+     */
+    public function allows(Request $request): bool
+    {
+        if ($this->authorizationCallback === null) {
+            return true;
+        }
+
+        return (bool) ($this->authorizationCallback)($request);
+    }
+
     public function collect(bool $forceRefresh = false): array
     {
         $callback = fn () => [
