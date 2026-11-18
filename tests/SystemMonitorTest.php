@@ -28,6 +28,14 @@ class SystemMonitorTest extends TestCase
         $this->assertSame([], $snapshot['security']);
     }
 
+    public function test_dashboard_translations_are_available_in_all_supported_locales(): void
+    {
+        foreach (['en', 'tr', 'ar', 'es', 'hi', 'zh_CN'] as $locale) {
+            $this->assertNotEmpty(trans('system-monitor::messages.customize', [], $locale));
+            $this->assertNotEmpty(trans('system-monitor::messages.light', [], $locale));
+        }
+    }
+
     public function test_it_collects_php_runtime_information(): void
     {
         config([
