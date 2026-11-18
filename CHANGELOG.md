@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.1.18 - 2026-11-18
+
+- Highlight each audible unhealthy metric card with an animated red neon border.
+- Keep card highlighting synchronized with per-tab master sound and per-card mute settings.
+- Tie audible alerts strictly to unhealthy metric cards so muted cards cannot trigger sound independently.
+
+
 ## v0.1.17 - 2026-11-18
 
 - Isolate sound preferences per browser tab using session-scoped storage.
