@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.19 - 2026-11-18
+
+- Replace the rotating card border with a thicker neon segment that travels around the fixed card outline.
+- Persist sound preferences across page reloads while keeping settings isolated per browser tab.
+
+
 ## v0.1.18 - 2026-11-18
 
 - Highlight each audible unhealthy metric card with an animated red neon border.
