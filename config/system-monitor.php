@@ -15,6 +15,7 @@ return [
         'php' => true,
         'laravel' => true,
         'database' => true,
+        'cache_queue' => true,
         'security' => true,
     ],
 ];
