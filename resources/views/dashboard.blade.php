@@ -53,7 +53,7 @@
             ['title' => 'Disk', 'value' => $disk['percent'] ?? null, 'foot' => $fmt($disk['free'] ?? null).' free'],
             ['title' => 'CPU load', 'value' => isset($load[0], $server['cpu_cores']) && $server['cpu_cores'] ? min(100, round($load[0] / $server['cpu_cores'] * 100)) : null, 'foot' => $load ? 'Load '.implode(' · ', array_map(fn($v) => number_format($v, 2), $load)) : 'Load unavailable'],
         ] as $gauge)
-            <article class="sm-gauge"><div class="sm-gauge-title">{{ $gauge['title'] }}</div><div class="sm-gauge-ring" style="--pct:{{ $gauge['value'] ?? 0 }}%"><strong>{{ $gauge['value'] === null ? '—' : $gauge['value'].'%' }}</strong></div><div class="sm-gauge-foot">{{ $gauge['foot'] }}</div></article>
+            <article class="sm-gauge"><div class="sm-gauge-title">{{ $gauge['title'] }}</div><div class="sm-gauge-ring"><svg class="sm-gauge-svg" viewBox="0 0 120 120" aria-hidden="true"><circle class="sm-gauge-track" cx="60" cy="60" r="46"/><circle class="sm-gauge-progress" cx="60" cy="60" r="46" stroke-dasharray="{{ round(($gauge['value'] ?? 0) * 2.89, 1) }} 289" transform="rotate(-90 60 60)"/></svg><strong>{{ $gauge['value'] === null ? '—' : $gauge['value'].'%' }}</strong></div><div class="sm-gauge-foot">{{ $gauge['foot'] }}</div></article>
         @endforeach
     </section>
     <div class="sm-section"><h2>System & application metrics</h2><span>Drag cards to rearrange · Customize to hide or show</span></div>
