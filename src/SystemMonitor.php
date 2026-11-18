@@ -1,10 +1,9 @@
 <?php
 
-namespace MertAydin\\SystemMonitor;
+namespace MertAydin\SystemMonitor;
 
-use Illuminate\\Support\\Facades\\Cache;
-use Illuminate\\Support\\Facades\\DB;
-use Illuminate\\Support\\Facades\\File;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class SystemMonitor
 {
@@ -49,7 +48,6 @@ class SystemMonitor
         return [
             'hostname' => gethostname() ?: 'Unknown',
             'os' => PHP_OS_FAMILY,
-            'php_uname' => php_uname('r'),
             'uptime_seconds' => $this->uptime(),
             'cpu_cores' => $this->cpuCores(),
             'load_average' => $load ?: null,
@@ -122,10 +120,9 @@ class SystemMonitor
             'debug' => (bool) config('app.debug'),
             'maintenance' => app()->isDownForMaintenance(),
             'timezone' => config('app.timezone'),
-            'url' => config('app.url'),
             'storage_writable' => is_writable(storage_path()),
             'cache_writable' => is_writable(storage_path('framework/cache')),
-            'log_writable' => is_writable(dirname(config('logging.channels.'.config('logging.default').'.path', storage_path('logs/laravel.log')))),
+            'logs_writable' => is_writable(storage_path('logs')),
         ];
     }
 
@@ -141,7 +138,7 @@ class SystemMonitor
                 'database' => DB::connection()->getDatabaseName(),
                 'latency_ms' => round((microtime(true) - $started) * 1000, 2),
             ];
-        } catch (\\Throwable $exception) {
+        } catch (\Throwable $exception) {
             report($exception);
 
             return [
@@ -161,7 +158,6 @@ class SystemMonitor
             'debug_enabled' => (bool) config('app.debug'),
             'production_debug_warning' => app()->environment('production') && (bool) config('app.debug'),
             'https_configured' => str_starts_with((string) config('app.url'), 'https://'),
-            'env_file_exposed_check' => 'not_performed',
         ];
     }
 }
