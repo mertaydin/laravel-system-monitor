@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     branches:
-      - release/v0.1.0
+      - 'release/**'
 
 permissions:
   contents: write
@@ -61,4 +61,4 @@ jobs:
       - name: Create Git tag and GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release view v0.1.0 >/dev/null 2>&1 || gh release create v0.1.0 --title "v0.1.0" --generate-notes
+        run: |\n          VERSION="${GITHUB_REF_NAME#release/}"\n          gh release view "$VERSION" >/dev/null 2>&1 || gh release create "$VERSION" --title "$VERSION" --generate-notes
