@@ -2,9 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## 0.1.0 - 2026-11-18
 
-- Initial package foundation.
-- Added a Laravel dashboard with configurable authentication middleware and request throttling.
-- Added server, PHP, Laravel, database and security collectors.
-- Added configurable snapshot caching and a responsive dark dashboard.
+- Initial public release.
+- Added server, PHP, Laravel, database, cache, queue and security collectors.
+- Added a responsive dashboard with customizable, draggable metric cards.
+- Added configurable snapshot caching and secure default middleware.
