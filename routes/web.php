@@ -17,6 +17,16 @@ Route::group([
         ->name('index')
         ->middleware('throttle:30,1');
 
+    Route::post('/refresh-interval', function (Request $request) {
+        $validated = $request->validate([
+            'interval' => ['required', 'integer', 'in:0,15,30,60,300,600'],
+        ]);
+
+        $request->session()->put('system-monitor.refresh_interval', (int) $validated['interval']);
+
+        return response()->json(['interval' => (int) $validated['interval']]);
+    })->name('refresh')->middleware('throttle:20,1');
+
     Route::post('/language', function (Request $request) {
         $validated = $request->validate([
             'locale' => ['required', 'string', 'in:tr,en,ar,es,hi,zh_CN'],
