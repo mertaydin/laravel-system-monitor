@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ asset('vendor/system-monitor/system-monitor.css') }}">
 </head>
 <body class="sm-body">
-<div class="sm-wrap" data-system-monitor data-move-up="{{ __('system-monitor::messages.move_up') }}" data-move-down="{{ __('system-monitor::messages.move_down') }}">
+<div class="sm-wrap" data-system-monitor data-move-up="{{ __('system-monitor::messages.move_up') }}" data-move-down="{{ __('system-monitor::messages.move_down') }}" data-drag-handle="{{ __('system-monitor::messages.drag_handle') }}">
     @php
         $server = $snapshot['server'] ?? [];
         $memory = $server['memory'] ?? [];
