@@ -1,54 +1,140 @@
 # Laravel System Monitor
 
-A lightweight, extensible system health and resource monitoring dashboard for Laravel applications.
+A lightweight, framework-native monitoring dashboard for Laravel. Get a quick view of server resources, runtime services and application health — without requiring Redis, Horizon, S3, Cloudflare R2 or any other optional infrastructure.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mertaydin/laravel-system-monitor/main/docs/images/dashboard-preview.svg" alt="Laravel System Monitor dashboard preview" width="100%">
+</p>
+
+<p align="center">
+  <a href="https://github.com/mertaydin/laravel-system-monitor/actions/workflows/tests.yml"><img src="https://github.com/mertaydin/laravel-system-monitor/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
+  <a href="https://packagist.org/packages/mertaydin/laravel-system-monitor"><img src="https://img.shields.io/packagist/v/mertaydin/laravel-system-monitor" alt="Latest Stable Version"></a>
+  <a href="https://packagist.org/packages/mertaydin/laravel-system-monitor"><img src="https://img.shields.io/packagist/dt/mertaydin/laravel-system-monitor" alt="Total Downloads"></a>
+  <a href="https://packagist.org/packages/mertaydin/laravel-system-monitor"><img src="https://img.shields.io/packagist/l/mertaydin/laravel-system-monitor" alt="License"></a>
+</p>
+
+## Features
+
+- **Server overview:** hostname, OS family, uptime, CPU core count and load average.
+- **Memory and disk:** RAM, swap and application filesystem usage where the host exposes the required information.
+- **PHP runtime:** PHP version, SAPI, memory and upload limits, OPcache and selected extension availability.
+- **Laravel application:** framework version, environment, maintenance mode and storage permissions.
+- **Database:** connection status, driver and a lightweight `SELECT 1` latency check.
+- **Cache and queue:** cache-store health, queue driver, database queue depth and failed-job count when those tables exist.
+- **Basic security checks:** APP_KEY presence, debug mode and HTTPS configuration derived from APP_URL.
+- **Customizable dashboard:** hide or show individual metric cards, drag cards to reorder them, and reset the layout.
+- **No optional service dependency:** Redis, Horizon, cloud storage and QR integrations are not required.
+- **Low overhead:** collector snapshot caching is enabled by default.
+- **Read-only:** the package does not run arbitrary shell commands or modify application data.
 
 ## Requirements
 
-- PHP 8.2+
+- PHP 8.2 or newer
 - Laravel 10, 11, 12 or 13
 
 ## Installation
 
 ```bash
 composer require mertaydin/laravel-system-monitor
+
 php artisan vendor:publish --tag=system-monitor-config
+php artisan vendor:publish --tag=system-monitor-assets
 ```
 
-The package registers its service provider automatically.
+The service provider is registered automatically through Laravel package discovery.
 
-## Access
+## Dashboard
 
-By default the dashboard is available at `/system-monitor` and uses Laravel's `web` and `auth` middleware.
+Open:
 
-Configure access in `config/system-monitor.php`:
-
-```php
-'middleware' => ['web', 'auth'],
-'path' => 'system-monitor',
+```
+/system-monitor
 ```
 
-For applications with a different authentication setup, replace the middleware with the appropriate authorization middleware. Do not expose the dashboard publicly.
+The dashboard uses the `web` and `auth` middleware by default. Keep it protected and add an administrator authorization middleware appropriate for your application.
 
-## Current metrics
+### Personalize the dashboard
 
-- Server hostname, OS family, uptime, CPU core count and load average
-- Linux memory and swap information when `/proc/meminfo` is available
-- Disk capacity for the application filesystem
-- PHP version, SAPI, limits, OPcache and selected extension availability
-- Laravel version, environment, maintenance state and writable directories
-- Database connectivity, driver and basic connection latency
-- Basic security configuration checks (APP_KEY presence, debug mode and HTTPS APP_URL)
-
-Some server metrics are platform-dependent. Unsupported values are returned as `null`; the package does not execute arbitrary shell commands.
+Click **Customize** to show or hide cards. Drag and drop cards to change their order. The selected visibility and order are saved in the current browser using local storage; they are not shared between users or browsers. Use **Reset layout** to restore the default arrangement.
 
 ## Configuration
 
-The configuration file supports enabling/disabling collectors, changing the route, middleware, dashboard title and snapshot cache TTL.
+Publish the configuration file to `config/system-monitor.php`.
+
+```php
+return [
+    'enabled' => env('SYSTEM_MONITOR_ENABLED', true),
+    'path' => env('SYSTEM_MONITOR_PATH', 'system-monitor'),
+    'middleware' => ['web', 'auth'],
+    'title' => env('SYSTEM_MONITOR_TITLE', 'System Monitor'),
+
+    'cache' => [
+        'enabled' => true,
+        'store' => env('SYSTEM_MONITOR_CACHE_STORE'),
+        'ttl' => 15,
+    ],
+
+    'collectors' => [
+        'server' => true,
+        'php' => true,
+        'laravel' => true,
+        'database' => true,
+        'cache_queue' => true,
+        'security' => true,
+    ],
+];
+```
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `enabled` | `true` | Enables or disables the dashboard route. |
+| `path` | `system-monitor` | Dashboard URL prefix. |
+| `middleware` | `['web', 'auth']` | Route middleware. Add your admin authorization middleware here. |
+| `title` | `System Monitor` | Dashboard title. |
+| `cache.enabled` | `true` | Enables cached collector snapshots. |
+| `cache.store` | Default cache | Optional Laravel cache store name. |
+| `cache.ttl` | `15` | Snapshot lifetime in seconds. |
+| `collectors.*` | `true` | Enables or disables individual collector groups. |
+
+You can change the dashboard URL and title in `.env`:
+
+```dotenv
+SYSTEM_MONITOR_PATH=system-monitor
+SYSTEM_MONITOR_TITLE="System Monitor"
+SYSTEM_MONITOR_ENABLED=true
+```
+
+## Metric availability
+
+Some operating-system metrics are platform-dependent. Linux memory, swap and uptime values are read from `/proc`; unsupported values are returned as `null`/N/A. CPU load average depends on `sys_getloadavg()`. Disk usage refers to the filesystem containing the Laravel application.
+
+Queue depth is reported only for Laravel's database queue driver. Failed job count is reported when the `failed_jobs` table exists. Other queue drivers are identified but their backend-specific depth is not queried by this initial release.
 
 ## Security
 
-The dashboard is protected by authentication middleware by default and rate limited. Keep it behind authentication and preferably an additional admin authorization rule or network restriction. The package does not display secrets or execute user-provided shell commands.
+- The dashboard is protected by `web` and `auth` middleware by default and has request throttling.
+- Add an application-specific admin middleware or network restriction. Authentication alone may not be sufficient for privileged operational data.
+- Do not expose the dashboard publicly.
+- The package does not display environment secrets or execute shell commands.
+- Database connectivity is checked with a read-only `SELECT 1` query.
+
+## Compatibility
+
+| Laravel | PHP |
+| --- | --- |
+| 10 | 8.2+ |
+| 11 | 8.2+ |
+| 12 | 8.2+ |
+| 13 | 8.3+ |
+
+## Development
+
+```bash
+composer install
+composer test
+composer format
+```
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE).
