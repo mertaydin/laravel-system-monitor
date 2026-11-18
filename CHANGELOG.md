@@ -5,7 +5,6 @@
 - Refresh the README dashboard preview with the current server, PHP, database, cache, queue, and application health cards.
 - Publish the refreshed documentation preview.
 
-# Changelog
 
 ## v0.1.21 - 2026-11-18
 
