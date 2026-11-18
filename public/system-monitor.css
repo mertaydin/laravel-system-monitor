@@ -7,3 +7,20 @@
 @media(max-width:700px){.sm-wrap{padding:15px}.sm-header{align-items:flex-start}.sm-updated{display:none}.sm-overview{grid-template-columns:repeat(2,minmax(0,1fr))}.sm-hero{grid-column:span 2;min-height:155px}.sm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sm-span-2{grid-column:span 2}.sm-card{padding:14px;min-height:120px}.sm-value{font-size:23px}}
 @media(max-width:420px){.sm-grid{grid-template-columns:1fr}.sm-span-2{grid-column:span 1}.sm-actions .sm-button{padding:8px 10px}.sm-brand{gap:9px}.sm-logo{width:36px;height:36px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
+/* Theme and locale controls */
+.sm-language-form{margin:0}
+.sm-select{appearance:auto;border:1px solid var(--sm-border);background:var(--sm-panel);color:var(--sm-text);padding:8px 10px;border-radius:9px;font:inherit;max-width:130px}
+.sm-sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.sm-body[data-theme="light"]{color-scheme:light;--sm-bg:#f3f6fa;--sm-panel:#fff;--sm-panel-2:#f7f9fc;--sm-border:#dce3ec;--sm-text:#172334;--sm-muted:#64748b;--sm-green:#218747;--sm-yellow:#a66a00;--sm-red:#c03945;--sm-blue:#2563eb;background:radial-gradient(ellipse at 10% -20%,#dceafa 0,transparent 45%),var(--sm-bg)}
+.sm-body[data-theme="light"] .sm-hero,.sm-body[data-theme="light"] .sm-gauge,.sm-body[data-theme="light"] .sm-card{background:linear-gradient(145deg,#fff,#f8fafc);box-shadow:0 8px 28px rgba(30,50,80,.06)}
+.sm-body[data-theme="light"] .sm-section h2{color:#526176}
+.sm-body[data-theme="light"] .sm-card-head{color:#34445a}
+.sm-body[data-theme="light"] .sm-gauge-title{color:#526176}
+.sm-body[data-theme="light"] .sm-gauge-track{stroke:#dce4ed}
+.sm-body[data-theme="light"] .sm-settings{background:rgba(20,32,48,.28)}
+.sm-body[data-theme="light"] .sm-settings-panel{background:#fff;border-color:#dce3ec;box-shadow:0 25px 80px rgba(20,35,55,.18)}
+.sm-body[data-theme="light"] .sm-widget-option{border-color:#e5eaf0}
+.sm-body[data-theme="light"] .sm-button:hover{border-color:#9aabc0;background:#f1f5f9}
+html[dir="rtl"] .sm-health-dot{margin-right:0;margin-left:9px}
+html[dir="rtl"] .sm-header,html[dir="rtl"] .sm-actions,html[dir="rtl"] .sm-brand{direction:rtl}
+@media(max-width:700px){.sm-actions{flex-wrap:wrap;justify-content:flex-end}.sm-select{max-width:112px}}
