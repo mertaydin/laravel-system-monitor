@@ -49,7 +49,7 @@ return [
     'available' => 'Kullanılabilir',
     'preferences_browser' => 'Tercihler bu tarayıcıda saklanır',
     'read_only' => 'Salt okunur tanılama',
-    'customize_title' => 'Dashboard\\\'u özelleştir',
+    'customize_title' => 'Kontrol panelini özelleştir',
     'customize_help' => 'Görünmesini istediğiniz kartları seçin. Sıralamayı değiştirmek için kartları sürükleyin. Tercihler bu tarayıcıda saklanır.',
     'reset_layout' => 'Düzeni sıfırla',
     'done' => 'Tamam',
