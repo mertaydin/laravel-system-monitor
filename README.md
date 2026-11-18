@@ -56,8 +56,8 @@ Open:
 Register an authorization callback in your application's `AppServiceProvider`. Return `true` to allow access and `false` to respond with HTTP 403. The callback receives the current request.
 
 ```php
-use Illuminate\\Http\\Request;
-use MertAydin\\SystemMonitor\\Facades\\SystemMonitor;
+use Illuminate\Http\Request;
+use MertAydin\SystemMonitor\Facades\SystemMonitor;
 
 public function boot(): void
 {
