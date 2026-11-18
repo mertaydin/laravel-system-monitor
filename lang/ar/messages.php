@@ -71,4 +71,12 @@ return [
     'application_timezone_hint' => 'المنطقة الزمنية المضبوطة في Laravel',
     'move_up' => 'تحريك لأعلى',
     'move_down' => 'تحريك لأسفل',
+    'refresh_interval' => 'فاصل التحديث التلقائي',
+    'refresh_disabled' => 'معطل',
+    'seconds' => 'ثانية',
+    'minute' => 'دقيقة',
+    'minutes' => 'دقائق',
+    'next_refresh' => 'التحديث التالي',
+    'refresh_now' => 'تحديث الآن',
+    'drag_handle' => 'اضغط مطولاً واسحب لإعادة الترتيب',
 ];
