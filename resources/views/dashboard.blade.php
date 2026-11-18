@@ -20,7 +20,7 @@
         $queue = $snapshot['cache_queue']['queue'] ?? [];
         $security = $snapshot['security'] ?? [];
         $fmt = fn ($bytes) => $bytes === null ? 'N/A' : number_format($bytes / 1073741824, 2).' GB';
-        $healthOk = ($database['status'] ?? '') === 'connected' && ($cache['status'] ?? '') === 'connected' && !($security['production_debug_warning'] ?? false);
+        $healthOk = (empty($database) || ($database['status'] ?? '') === 'connected') && (empty($cache) || ($cache['status'] ?? '') === 'connected') && !($security['production_debug_warning'] ?? false);
         $pctClass = fn ($v) => $v === null ? '' : ($v >= 90 ? 'sm-bad' : ($v >= 75 ? 'sm-warn' : 'sm-good'));
         $load = $server['load_average'] ?? null;
         $widgets = [
@@ -58,7 +58,7 @@
     </section>
     <div class="sm-section"><h2>System & application metrics</h2><span>Drag cards to rearrange · Customize to hide or show</span></div>
     <section class="sm-grid" aria-label="System metrics">
-        <article class="sm-card" data-widget="cpu" data-title="CPU"><div class="sm-card-head">CPU cores <i class="sm-card-dot"></i></div><div class="sm-value">{{ $server['cpu_cores'] ?? 'N/A' }}</div><div class="sm-meta">Load average: {{ $load ? implode(' / ', array_map(fn($v)=>number_format($v,2), $load)) : 'N/A' }}</div></article>
+        <article class="sm-card" draggable="true" data-widget="cpu" data-title="CPU"><div class="sm-card-head">CPU cores <i class="sm-card-dot"></i></div><div class="sm-value">{{ $server['cpu_cores'] ?? 'N/A' }}</div><div class="sm-meta">Load average: {{ $load ? implode(' / ', array_map(fn($v)=>number_format($v,2), $load)) : 'N/A' }}</div></article>
         <article class="sm-card" data-widget="memory" data-title="Memory"><div class="sm-card-head">Memory usage <i class="sm-card-dot {{ $pctClass($memory['percent'] ?? null) }}"></i></div><div class="sm-value {{ $pctClass($memory['percent'] ?? null) }}">{{ isset($memory['percent']) ? $memory['percent'].'%' : 'N/A' }}</div><div class="sm-meta">{{ $fmt($memory['used'] ?? null) }} used / {{ $fmt($memory['total'] ?? null) }}</div></article>
         <article class="sm-card" data-widget="disk" data-title="Disk"><div class="sm-card-head">Disk usage <i class="sm-card-dot {{ $pctClass($disk['percent'] ?? null) }}"></i></div><div class="sm-value {{ $pctClass($disk['percent'] ?? null) }}">{{ isset($disk['percent']) ? $disk['percent'].'%' : 'N/A' }}</div><div class="sm-meta">{{ $fmt($disk['free'] ?? null) }} free / {{ $fmt($disk['total'] ?? null) }}</div></article>
         <article class="sm-card" data-widget="uptime" data-title="Uptime"><div class="sm-card-head">Server uptime <i class="sm-card-dot"></i></div><div class="sm-value">{{ isset($server['uptime_seconds']) ? floor($server['uptime_seconds']/86400).'d '.floor(($server['uptime_seconds']%86400)/3600).'h' : 'N/A' }}</div><div class="sm-meta">{{ $server['os'] ?? 'OS unavailable' }}</div></article>
