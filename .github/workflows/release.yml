@@ -61,4 +61,6 @@ jobs:
       - name: Create Git tag and GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |\n          VERSION="${GITHUB_REF_NAME#release/}"\n          gh release view "$VERSION" >/dev/null 2>&1 || gh release create "$VERSION" --title "$VERSION" --generate-notes
+        run: |
+          VERSION="${GITHUB_REF_NAME#release/}"
+          gh release view "$VERSION" >/dev/null 2>&1 || gh release create "$VERSION" --title "$VERSION" --generate-notes
