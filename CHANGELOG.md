@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.1.15 - 2026-11-18
+
+- Replaced JavaScript-dependent manual refresh with a native GET form.
+- Replaced JavaScript-dependent automatic refresh with browser-native meta refresh, forcing fresh metric collection.
+- Saved refresh interval through a standard CSRF-protected form and redirected back to the dashboard.
+- Added cache-busting version query parameters for updated dashboard assets.
+
 ## v0.1.8 - 2026-11-18
 
 - Publish the dashboard authorization callback and facade, with middleware enforcement and authorization tests.
