@@ -71,4 +71,12 @@ return [
     'application_timezone_hint' => 'Laravel 配置的时区',
     'move_up' => '上移',
     'move_down' => '下移',
+    'refresh_interval' => '自动刷新间隔',
+    'refresh_disabled' => '已关闭',
+    'seconds' => '秒',
+    'minute' => '分钟',
+    'minutes' => '分钟',
+    'next_refresh' => '下次刷新',
+    'refresh_now' => '立即刷新',
+    'drag_handle' => '按住并拖动以重新排序',
 ];
