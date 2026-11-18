@@ -1,9 +1,9 @@
 <?php
 
-namespace MertAydin\\SystemMonitor\\Http\\Controllers;
+namespace MertAydin\SystemMonitor\Http\Controllers;
 
-use Illuminate\\Routing\\Controller;
-use MertAydin\\SystemMonitor\\SystemMonitor;
+use Illuminate\Routing\Controller;
+use MertAydin\SystemMonitor\SystemMonitor;
 
 class DashboardController extends Controller
 {
