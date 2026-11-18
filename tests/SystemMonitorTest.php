@@ -2,6 +2,7 @@
 
 namespace MertAydin\SystemMonitor\Tests;
 
+use Illuminate\Http\Request;
 use MertAydin\SystemMonitor\SystemMonitor;
 use Orchestra\Testbench\TestCase;
 
