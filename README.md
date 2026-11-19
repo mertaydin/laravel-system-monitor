@@ -1,17 +1,19 @@
 # Laravel System Monitor
 
+[![Latest Version](https://img.shields.io/packagist/v/laravel-system-monitor?label=Packagist)](https://packagist.org/packages/laravel-system-monitor)
+[![Total Downloads](https://img.shields.io/packagist/dt/laravel-system-monitor?label=downloads)](https://packagist.org/packages/laravel-system-monitor)
+[![PHP](https://img.shields.io/packagist/php-v/laravel-system-monitor?label=PHP)](https://packagist.org/packages/laravel-system-monitor)
+[![Laravel](https://img.shields.io/badge/Laravel-10%20%7C%2011%20%7C%2012%20%7C%2013-FF2D20?logo=laravel&logoColor=white)](https://laravel.com)
+[![CI](https://github.com/mertaydin/laravel-system-monitor/actions/workflows/tests.yml/badge.svg?branch=main&label=CI)](https://github.com/mertaydin/laravel-system-monitor/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+
 A lightweight, framework-native monitoring dashboard for Laravel. Get a quick view of server resources, runtime services and application health — without requiring Redis, Horizon, S3, Cloudflare R2 or any other optional infrastructure.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/mertaydin/laravel-system-monitor/main/docs/images/dashboard-screenshot.png" alt="Laravel System Monitor dashboard preview" width="100%">
 </p>
 
-<p align="center">
-  <a href="https://github.com/mertaydin/laravel-system-monitor/actions/workflows/tests.yml"><img src="https://github.com/mertaydin/laravel-system-monitor/actions/workflows/tests.yml/badge.svg" alt="Tests"></a>
-  <a href="https://packagist.org/packages/mertaydin/laravel-system-monitor"><img src="https://img.shields.io/packagist/v/mertaydin/laravel-system-monitor" alt="Latest Stable Version"></a>
-  <a href="https://packagist.org/packages/mertaydin/laravel-system-monitor"><img src="https://img.shields.io/packagist/dt/mertaydin/laravel-system-monitor" alt="Total Downloads"></a>
-  <a href="https://packagist.org/packages/mertaydin/laravel-system-monitor"><img src="https://img.shields.io/packagist/l/mertaydin/laravel-system-monitor" alt="License"></a>
-</p>
 
 ## Features
 
