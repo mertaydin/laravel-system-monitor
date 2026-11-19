@@ -1,3 +1,8 @@
+## v0.2.2 - 2026-11-19
+
+- Add the shared security CI baseline: Composer audit, PHPStan/Larastan, changed-file Pint checks, PHP syntax validation, and automated tests.
+- Add weekly Dependabot updates and resilient Composer dependency resolution.
+
 ## v0.2.1 - 2026-11-19
 
 - Add security CI with Composer vulnerability auditing, PHPStan/Larastan analysis, Pint checks, PHP syntax validation, and automated tests.
