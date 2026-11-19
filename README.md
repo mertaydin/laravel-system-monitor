@@ -1,8 +1,8 @@
 # Laravel System Monitor
 
-[![Latest Version](https://img.shields.io/packagist/v/laravel-system-monitor?label=Packagist)](https://packagist.org/packages/laravel-system-monitor)
-[![Total Downloads](https://img.shields.io/packagist/dt/laravel-system-monitor?label=downloads)](https://packagist.org/packages/laravel-system-monitor)
-[![PHP](https://img.shields.io/packagist/php-v/laravel-system-monitor?label=PHP)](https://packagist.org/packages/laravel-system-monitor)
+[![Latest Version](https://img.shields.io/packagist/v/mertaydin/laravel-system-monitor?label=Packagist)](https://packagist.org/packages/laravel-system-monitor)
+[![Total Downloads](https://img.shields.io/packagist/dt/mertaydin/laravel-system-monitor?label=downloads)](https://packagist.org/packages/laravel-system-monitor)
+[![PHP](https://img.shields.io/packagist/php-v/mertaydin/laravel-system-monitor?label=PHP)](https://packagist.org/packages/laravel-system-monitor)
 [![Laravel](https://img.shields.io/badge/Laravel-10%20%7C%2011%20%7C%2012%20%7C%2013-FF2D20?logo=laravel&logoColor=white)](https://laravel.com)
 [![CI](https://github.com/mertaydin/laravel-system-monitor/actions/workflows/tests.yml/badge.svg?branch=main&label=CI)](https://github.com/mertaydin/laravel-system-monitor/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
