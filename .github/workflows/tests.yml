@@ -53,7 +53,9 @@ jobs:
           coverage: none
       - run: composer require "illuminate/support:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-update
       - run: composer config policy.advisories.block false
-      - run: for attempt in 1 2 3; do
+      - name: Resolve dependencies with retry
+        run: |
+          for attempt in 1 2 3; do
             if COMPOSER_MAX_PARALLEL_HTTP=2 composer update --prefer-dist --no-interaction --no-audit; then
               exit 0
             fi
