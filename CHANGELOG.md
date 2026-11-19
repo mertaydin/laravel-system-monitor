@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.29 - 2026-11-19
+
+- Recapture the live dashboard screenshot, including the unhealthy database alert and animated warning border.
+- Refresh the README screenshot documentation.
+
 ## v0.1.28 - 2026-11-19
 
 - Document force-refreshing published dashboard assets after package updates.
