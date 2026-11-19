@@ -156,3 +156,9 @@ composer format
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## Documentation and support
+
+- [Changelog](CHANGELOG.md)
+- [GitHub releases](https://github.com/mertaydin/laravel-system-monitor/releases)
+- [Report an issue or request a feature](https://github.com/mertaydin/laravel-system-monitor/issues)
