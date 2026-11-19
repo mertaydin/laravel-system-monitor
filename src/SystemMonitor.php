@@ -27,11 +27,9 @@ class SystemMonitor
      */
     public function allows(Request $request): bool
     {
-        if ($this->authorizationCallback === null) {
-            return true;
-        }
-
-        return (bool) ($this->authorizationCallback)($request);
+        // System metrics and runtime configuration are sensitive operational data.
+        return $this->authorizationCallback !== null
+            && (bool) ($this->authorizationCallback)($request);
     }
 
     public function collect(bool $forceRefresh = false): array
