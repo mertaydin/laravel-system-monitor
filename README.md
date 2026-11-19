@@ -38,8 +38,11 @@ A lightweight, framework-native monitoring dashboard for Laravel. Get a quick vi
 composer require mertaydin/laravel-system-monitor
 
 php artisan vendor:publish --tag=system-monitor-config
-php artisan vendor:publish --tag=system-monitor-assets\nphp artisan vendor:publish --tag=system-monitor-translations
+php artisan vendor:publish --tag=system-monitor-assets --force
+php artisan vendor:publish --tag=system-monitor-translations
 ```
+
+After every package update, rerun the asset publishing command with `--force` so the latest JavaScript and CSS replace the already-published copies.
 
 The service provider is registered automatically through Laravel package discovery.
 
