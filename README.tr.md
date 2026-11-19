@@ -75,7 +75,7 @@ public function boot(): void
 }
 ```
 
-Callback, dil tercihi uç noktası dahil panel rotalarına uygulanır. Callback kaydedilmezse paket yapılandırılmış middleware davranışını korur (varsayılan `web` ve `auth`).
+Callback, dil tercihi uç noktası dahil panel rotalarına uygulanır. Callback kaydedilmezse erişim HTTP 403 ile reddedilir. Mevcut kullanıcıyı ve yönetici rolünü kontrol eden bir callback kaydedin. Yapılandırılmış middleware'ler (varsayılan `web` ve `auth`) de uygulanır.
 
 ### Paneli kişiselleştirme
 
