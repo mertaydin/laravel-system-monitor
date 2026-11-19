@@ -1,3 +1,8 @@
+## v0.2.1 - 2026-11-19
+
+- Add security CI with Composer vulnerability auditing, PHPStan/Larastan analysis, Pint checks, PHP syntax validation, and automated tests.
+- Add weekly Dependabot updates for Composer dependencies and GitHub Actions.
+
 # Changelog
 
 ## v0.1.30 - 2026-11-19
