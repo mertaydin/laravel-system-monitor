@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.28 - 2026-11-19
+
+- Document force-refreshing published dashboard assets after package updates.
+
 ## v0.1.27 - 2026-11-19
 
 - Keep unhealthy-card red neon animation independent from both global and per-card sound preferences.
