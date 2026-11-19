@@ -174,3 +174,7 @@ MIT. See [LICENSE](LICENSE).
 
 
 <!-- Screenshots are generated from the current package UI by GitHub Actions. -->
+
+---
+
+**Dil / Language:** [Türkçe README](README.tr.md) · [English README](README.md)
