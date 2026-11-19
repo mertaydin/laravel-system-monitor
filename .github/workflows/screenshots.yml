@@ -1,0 +1,102 @@
+name: Capture dashboard screenshot
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/screenshots.yml'
+      - 'README.md'
+      - 'resources/views/**'
+      - 'public/system-monitor.css'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: system-monitor-screenshot
+  cancel-in-progress: true
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, sqlite3, pdo_sqlite
+          tools: composer:v2
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Create temporary Laravel host application
+        run: composer create-project laravel/laravel screenshot-app '^12.0' --no-interaction
+      - name: Install package and prepare screenshot environment
+        working-directory: screenshot-app
+        run: |
+          composer config repositories.system-monitor '{"type":"path","url":"../","options":{"symlink":false}}'
+          composer require mertaydin/laravel-system-monitor:@dev --no-interaction
+          php artisan key:generate
+          mkdir -p database
+          touch database/database.sqlite
+          cat > .env <<'ENV'
+          APP_NAME="Laravel System Monitor"
+          APP_ENV=local
+          APP_KEY=
+          APP_DEBUG=true
+          APP_URL=http://127.0.0.1:8000
+          LOG_CHANNEL=stack
+          DB_CONNECTION=mysql
+          DB_HOST=127.0.0.1
+          DB_PORT=1
+          DB_DATABASE=screenshot
+          DB_USERNAME=screenshot
+          DB_PASSWORD=screenshot
+          CACHE_STORE=file
+          SESSION_DRIVER=file
+          SYSTEM_MONITOR_ENABLED=true
+          ENV
+          php artisan key:generate
+          php artisan vendor:publish --tag=system-monitor-config --force
+          php artisan vendor:publish --tag=system-monitor-assets --force
+          sed -i "s/'middleware' => \['web', 'auth'\]/'middleware' => []/" config/system-monitor.php
+          npm install --no-audit --no-fund playwright
+          npx playwright install --with-deps chromium
+      - name: Start Laravel
+        working-directory: screenshot-app
+        run: |
+          php artisan serve --host=127.0.0.1 --port=8000 > /tmp/system-monitor-server.log 2>&1 &
+          for i in $(seq 1 20); do
+            if curl --max-time 2 -fsS http://127.0.0.1:8000/system-monitor >/dev/null; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/system-monitor-server.log
+          cat storage/logs/laravel.log || true
+          exit 1
+      - name: Capture actual dashboard with a database error state
+        working-directory: screenshot-app
+        run: |
+          mkdir -p ../docs/images
+          node --input-type=module <<'NODE'
+          import { chromium } from 'playwright';
+          const browser = await chromium.launch({headless:true});
+          const page = await browser.newPage({viewport:{width:1600,height:1200},deviceScaleFactor:1});
+          page.on('pageerror', error => console.error(error));
+          const response = await page.goto('http://127.0.0.1:8000/system-monitor',{waitUntil:'networkidle'});
+          if (!response || response.status() >= 400) throw new Error('Dashboard failed: '+response?.status());
+          await page.waitForSelector('[data-widget="database"]');
+          await page.screenshot({path:'../docs/images/dashboard-screenshot.png',fullPage:true});
+          await browser.close();
+          NODE
+      - name: Commit screenshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/images/dashboard-screenshot.png
+          if ! git diff --cached --quiet; then
+            git commit -m "docs: capture real dashboard with database alert"
+            git push
+          fi
