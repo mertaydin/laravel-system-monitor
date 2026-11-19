@@ -1,5 +1,10 @@
 # Changelog
 
+
+## v0.1.24 - 2026-11-19
+
+- Replace the illustrative README preview with a browser-captured screenshot of the actual dashboard, showing a database connection failure and its neon alert state.
+- Add an automated Playwright screenshot workflow.
 ## v0.1.23 - 2026-11-18
 
 - Rebuild the README dashboard preview to reflect the current dashboard controls and monitoring cards, including per-card sound controls and refresh preferences.
