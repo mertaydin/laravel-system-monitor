@@ -9,11 +9,11 @@ use Orchestra\Testbench\TestCase;
 class SystemMonitorTest extends TestCase
 {
 
-    public function test_authorization_is_allowed_by_default_when_no_callback_is_registered(): void
+    public function test_authorization_is_denied_by_default_when_no_callback_is_registered(): void
     {
         $monitor = new SystemMonitor();
 
-        $this->assertTrue($monitor->allows(Request::create('/system-monitor')));
+        $this->assertFalse($monitor->allows(Request::create('/system-monitor')));
     }
 
     public function test_authorization_callback_can_allow_or_deny_a_request(): void
