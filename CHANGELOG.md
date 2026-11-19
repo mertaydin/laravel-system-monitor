@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.27 - 2026-11-19
+
+- Keep unhealthy-card red neon animation independent from both global and per-card sound preferences.
+- Re-evaluate visual alert state whenever sound preferences change and on dashboard initialization.
+
+
 ## v0.1.26 - 2026-11-19
 
 - Keep the animated red neon border active on every unhealthy metric card even when its alert sound is muted individually or globally.
