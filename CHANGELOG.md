@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.26 - 2026-11-19
+
+- Keep the animated red neon border active on every unhealthy metric card even when its alert sound is muted individually or globally.
+- Decouple visual health highlighting from sound preferences; mute controls now affect audio only.
+
+
 ## v0.1.25 - 2026-11-19
 
 - Include the browser-captured dashboard screenshot showing the real database failure neon alert state in the tagged release.
