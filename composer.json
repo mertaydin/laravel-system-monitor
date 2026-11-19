@@ -41,7 +41,11 @@
     "pint-test": "pint --test"
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "preferred-install": {
+      "phpstan/phpstan": "source",
+      "*": "dist"
+    }
   },
   "minimum-stability": "stable",
   "prefer-stable": true,
