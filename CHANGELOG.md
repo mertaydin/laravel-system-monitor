@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.25 - 2026-11-19
+
+- Include the browser-captured dashboard screenshot showing the real database failure neon alert state in the tagged release.
+
+
 
 ## v0.1.24 - 2026-11-19
 
