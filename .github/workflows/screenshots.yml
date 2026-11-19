@@ -98,5 +98,6 @@ jobs:
           git add docs/images/dashboard-screenshot.png
           if ! git diff --cached --quiet; then
             git commit -m "docs: capture real dashboard with database alert"
+            git pull --rebase origin main
             git push
           fi
