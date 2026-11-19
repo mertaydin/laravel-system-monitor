@@ -3,7 +3,7 @@
 A lightweight, framework-native monitoring dashboard for Laravel. Get a quick view of server resources, runtime services and application health — without requiring Redis, Horizon, S3, Cloudflare R2 or any other optional infrastructure.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/mertaydin/laravel-system-monitor/main/docs/images/dashboard-preview.svg" alt="Laravel System Monitor dashboard preview" width="100%">
+  <img src="https://raw.githubusercontent.com/mertaydin/laravel-system-monitor/main/docs/images/dashboard-screenshot.png" alt="Laravel System Monitor dashboard preview" width="100%">
 </p>
 
 <p align="center">
