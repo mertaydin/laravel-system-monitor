@@ -122,6 +122,12 @@ SYSTEM_MONITOR_TITLE="System Monitor"
 SYSTEM_MONITOR_ENABLED=true
 ```
 
+## Alert sound preferences
+
+Unhealthy metric cards receive an animated red neon border independently of audio settings. You can mute the dashboard sound globally or mute individual cards; muting sound never hides the visual health warning. Sound preferences are stored per browser tab.
+
+The dashboard supports automatic refresh intervals and a manual refresh action. Card visibility and ordering can be customized without changing the server-side metric collection.
+
 ## Metric availability
 
 Some operating-system metrics are platform-dependent. Linux memory, swap and uptime values are read from `/proc`; unsupported values are returned as `null`/N/A. CPU load average depends on `sys_getloadavg()`. Disk usage refers to the filesystem containing the Laravel application.
