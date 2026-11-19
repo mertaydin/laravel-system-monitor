@@ -171,3 +171,6 @@ MIT. See [LICENSE](LICENSE).
 - [Changelog](CHANGELOG.md)
 - [GitHub releases](https://github.com/mertaydin/laravel-system-monitor/releases)
 - [Report an issue or request a feature](https://github.com/mertaydin/laravel-system-monitor/issues)
+
+
+<!-- Screenshots are generated from the current package UI by GitHub Actions. -->
