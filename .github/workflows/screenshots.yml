@@ -41,6 +41,18 @@ jobs:
         run: |
           composer config repositories.system-monitor '{"type":"path","url":"../","options":{"symlink":false}}'
           composer require mertaydin/laravel-system-monitor:@dev --no-interaction
+          cat > app/Providers/AppServiceProvider.php <<'PHP'
+          <?php
+          namespace App\\Providers;
+          use Illuminate\\Http\\Request;
+          use Illuminate\\Support\\ServiceProvider;
+          use MertAydin\\SystemMonitor\\Facades\\SystemMonitor;
+          class AppServiceProvider extends ServiceProvider {
+              public function boot(): void {
+                  SystemMonitor::auth(static fn (Request $request): bool => true);
+              }
+          }
+          PHP
           php artisan key:generate
           mkdir -p database
           touch database/database.sqlite
