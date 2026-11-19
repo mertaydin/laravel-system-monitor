@@ -73,7 +73,7 @@ public function boot(): void
 }
 ```
 
-The callback is applied to dashboard routes, including the language preference endpoint. If no callback is registered, the package keeps its configured middleware behavior (by default, `web` and `auth`).
+The callback is applied to dashboard routes, including the language preference endpoint. If no callback is registered, access is denied with HTTP 403. Register a callback that checks the current user and an administrator role. The configured middleware (by default, `web` and `auth`) also applies.
 
 
 ### Personalize the dashboard
