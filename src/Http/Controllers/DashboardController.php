@@ -2,12 +2,13 @@
 
 namespace MertAydin\SystemMonitor\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use MertAydin\SystemMonitor\SystemMonitor;
 
 class DashboardController extends Controller
 {
-    public function __invoke(\Illuminate\Http\Request $request, SystemMonitor $monitor)
+    public function __invoke(Request $request, SystemMonitor $monitor)
     {
         abort_unless(config('system-monitor.enabled', true), 404);
 

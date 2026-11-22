@@ -8,10 +8,9 @@ use Orchestra\Testbench\TestCase;
 
 class SystemMonitorTest extends TestCase
 {
-
     public function test_authorization_is_denied_by_default_when_no_callback_is_registered(): void
     {
-        $monitor = new SystemMonitor();
+        $monitor = new SystemMonitor;
 
         $this->assertFalse($monitor->allows(Request::create('/system-monitor')));
     }
@@ -19,7 +18,7 @@ class SystemMonitorTest extends TestCase
     public function test_authorization_callback_can_allow_or_deny_a_request(): void
     {
         $request = Request::create('/system-monitor');
-        $monitor = new SystemMonitor();
+        $monitor = new SystemMonitor;
 
         $monitor->auth(fn (Request $request) => $request->path() === 'system-monitor');
 
@@ -41,7 +40,7 @@ class SystemMonitorTest extends TestCase
             'system-monitor.collectors.security' => false,
         ]);
 
-        $snapshot = (new SystemMonitor())->collect();
+        $snapshot = (new SystemMonitor)->collect();
 
         $this->assertArrayHasKey('collected_at', $snapshot);
         $this->assertSame([], $snapshot['server']);
@@ -70,7 +69,7 @@ class SystemMonitorTest extends TestCase
             'system-monitor.collectors.security' => false,
         ]);
 
-        $snapshot = (new SystemMonitor())->collect();
+        $snapshot = (new SystemMonitor)->collect();
 
         $this->assertSame(PHP_VERSION, $snapshot['php']['version']);
         $this->assertArrayHasKey('memory_limit', $snapshot['php']);
