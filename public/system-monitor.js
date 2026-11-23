@@ -103,3 +103,75 @@ cards.forEach(card=>{
 });
 apply();
 })();
+/* Portable system report: browser-only export, no additional server permissions or dependencies. */
+(() => {
+    'use strict';
+    const root = document.querySelector('[data-system-monitor]');
+    const header = root?.querySelector('.sm-actions');
+    if (!root || !header || header.querySelector('[data-sm-report]')) return;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'sm-button';
+    button.dataset.smReport = 'true';
+    button.textContent = 'Export report';
+    button.setAttribute('aria-label', 'Export system report as JSON or text');
+    const exportReport = format => {
+        const cards = [...root.querySelectorAll('.sm-card[data-widget]')].map(card => ({
+            section: card.dataset.title || card.dataset.widget,
+            value: card.querySelector('.sm-value')?.textContent?.trim() || '',
+            details: card.querySelector('.sm-meta')?.textContent?.trim() || '',
+            status: card.querySelector('.sm-card-dot')?.className || ''
+        }));
+        const report = {
+            generated_at: new Date().toISOString(),
+            page_title: document.title,
+            last_checked: root.querySelector('[data-sm-last-checked]')?.textContent?.trim() || '',
+            overall_health: root.querySelector('.sm-health')?.textContent?.trim() || '',
+            metrics: cards
+        };
+        const content = format === 'json'
+            ? JSON.stringify(report, null, 2)
+            : ['SYSTEM MONITOR REPORT', 'Generated: ' + report.generated_at, 'Last checked: ' + report.last_checked, 'Overall health: ' + report.overall_health, '', ...cards.flatMap(card => [card.section, card.value, card.details, ''])].join('\n');
+        const blob = new Blob([content], {type: format === 'json' ? 'application/json;charset=utf-8' : 'text/plain;charset=utf-8'});
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'system-monitor-report-' + new Date().toISOString().replace(/[:.]/g, '-') + '.' + format;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+    };
+    button.addEventListener('click', () => {
+        const choice = window.prompt('Enter export format: json or txt', 'json');
+        if (choice === null) return;
+        const format = choice.trim().toLowerCase();
+        if (format === 'json' || format === 'txt') exportReport(format);
+        else window.alert('Choose json or txt.');
+    });
+    header.appendChild(button);
+})();
+
+/* Full-screen dashboard mode for wall displays and incident response. */
+(() => {
+    'use strict';
+    const root = document.querySelector('[data-system-monitor]');
+    const header = root?.querySelector('.sm-actions');
+    if (!root || !header || header.querySelector('[data-sm-fullscreen]')) return;
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'sm-button';
+    button.dataset.smFullscreen = 'true'; button.textContent = 'Full screen';
+    button.addEventListener('click', async () => {
+        try {
+            if (!document.fullscreenElement) await root.requestFullscreen();
+            else await document.exitFullscreen();
+        } catch (error) {
+            button.textContent = 'Full screen unavailable';
+            window.setTimeout(() => { button.textContent = 'Full screen'; }, 1800);
+        }
+    });
+    document.addEventListener('fullscreenchange', () => {
+        button.textContent = document.fullscreenElement === root ? 'Exit full screen' : 'Full screen';
+    });
+    header.appendChild(button);
+})();
