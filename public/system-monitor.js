@@ -151,3 +151,27 @@ apply();
     });
     header.appendChild(button);
 })();
+
+/* Full-screen dashboard mode for wall displays and incident response. */
+(() => {
+    'use strict';
+    const root = document.querySelector('[data-system-monitor]');
+    const header = root?.querySelector('.sm-actions');
+    if (!root || !header || header.querySelector('[data-sm-fullscreen]')) return;
+    const button = document.createElement('button');
+    button.type = 'button'; button.className = 'sm-button';
+    button.dataset.smFullscreen = 'true'; button.textContent = 'Full screen';
+    button.addEventListener('click', async () => {
+        try {
+            if (!document.fullscreenElement) await root.requestFullscreen();
+            else await document.exitFullscreen();
+        } catch (error) {
+            button.textContent = 'Full screen unavailable';
+            window.setTimeout(() => { button.textContent = 'Full screen'; }, 1800);
+        }
+    });
+    document.addEventListener('fullscreenchange', () => {
+        button.textContent = document.fullscreenElement === root ? 'Exit full screen' : 'Full screen';
+    });
+    header.appendChild(button);
+})();
