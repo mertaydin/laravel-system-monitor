@@ -1,3 +1,9 @@
+## v0.3.0 - 2026-11-26
+
+- Rebuild the PDF export as an editorial-style infrastructure overview with a dark executive summary, health counters, circular resource charts, and a two-column service inventory.
+- Replace the previous compact report/table layout with a distinct visual hierarchy and clearer status presentation.
+- Refresh the published dashboard JavaScript asset version.
+
 ## v0.2.9 - 2026-11-26
 
 - Localize the export format dialog and its descriptions according to the dashboard language, including Turkish.
