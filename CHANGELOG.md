@@ -1,3 +1,7 @@
+## v0.3.1 - 2026-11-26
+
+- Align dashboard CSS and JavaScript cache-busting query values with the package release version.
+
 ## v0.3.0 - 2026-11-26
 
 - Rebuild the PDF export as an editorial-style infrastructure overview with a dark executive summary, health counters, circular resource charts, and a two-column service inventory.
