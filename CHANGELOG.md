@@ -1,3 +1,8 @@
+## v0.2.7 - 2026-11-26
+
+- Replace the browser prompt with an accessible, responsive export format picker and clear descriptions for each report type.
+- Refresh published dashboard asset cache keys.
+
 ## v0.2.6 - 2026-11-26
 
 - Redesign the printable PDF report with a polished A4 layout, clear status summary, resource cards, and readable component table.
