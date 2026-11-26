@@ -89,3 +89,34 @@ html[dir="rtl"] .sm-card-sound-toggle{right:auto;left:12px}
         transition: none;
     }
 }
+
+
+/* Printable point-in-time PDF report. */
+.sm-print-report{display:none}
+@media print{
+ @page{size:A4 portrait;margin:14mm}
+ html,body{background:#fff!important;color:#172334!important}
+ body[data-sm-print-active="true"] *{visibility:hidden!important}
+ body[data-sm-print-active="true"] [data-sm-print-report],
+ body[data-sm-print-active="true"] [data-sm-print-report] *{visibility:visible!important}
+ body[data-sm-print-active="true"] [data-sm-print-report]{display:block!important;position:absolute!important;inset:0 auto auto 0!important;width:100%!important;max-width:none!important;padding:0!important;margin:0!important;background:#fff!important;color:#172334!important;font:10pt/1.45 Arial,sans-serif!important;box-shadow:none!important}
+ .sm-print-eyebrow{margin:0 0 5px;color:#526176;font-size:8pt;font-weight:700;letter-spacing:1.2px}
+ .sm-print-title{margin:0 0 5px;font-size:24pt;line-height:1.15;color:#142033}
+ .sm-print-meta{margin:2px 0;color:#64748b;font-size:8.5pt}
+ .sm-print-health{display:inline-block;margin:12px 0 6px;padding:7px 11px;border:1px solid #218747;border-radius:6px;color:#176b36;font-weight:700}
+ .sm-print-health[data-health="warning"]{border-color:#c03945;color:#a21d2b}
+ .sm-print-heading{margin:18px 0 8px;padding-bottom:5px;border-bottom:1px solid #dce3ec;font-size:13pt;color:#142033}
+ .sm-print-chart{display:block;width:100%;height:auto;max-height:340px;overflow:visible;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .sm-print-chart-label{font:600 13px Arial,sans-serif;fill:#34445a}
+ .sm-print-chart-value{font:700 13px Arial,sans-serif;fill:#172334}
+ .sm-print-chart-track{fill:#e8edf3}
+ .sm-print-chart-bar{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .sm-print-chart-bar.is-healthy{fill:#218747}
+ .sm-print-chart-bar.is-warning{fill:#d18b19}
+ .sm-print-chart-bar.is-critical{fill:#c03945}
+ .sm-print-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:8pt}
+ .sm-print-table th,.sm-print-table td{padding:6px 7px;border:1px solid #dce3ec;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+ .sm-print-table th{background:#f1f5f9;font-weight:700}
+ .sm-print-table th:nth-child(1){width:23%}.sm-print-table th:nth-child(2){width:18%}.sm-print-table th:nth-child(3){width:39%}.sm-print-table th:nth-child(4){width:20%}
+ .sm-print-footnote{margin-top:14px;color:#64748b;font-size:7.5pt}
+}
