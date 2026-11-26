@@ -8,7 +8,7 @@
         <meta http-equiv="refresh" content="{{ $refreshInterval }};url={{ route('system-monitor.index', ['refresh' => 1, '_sm_refresh' => now()->timestamp]) }}">
     @endif
     <title>{{ $title }}</title>
-    <link rel="stylesheet" href="{{ asset('vendor/system-monitor/system-monitor.css') }}?v=0.1.28">
+    <link rel="stylesheet" href="{{ asset('vendor/system-monitor/system-monitor.css') }}?v=0.1.29">
 </head>
 <body class="sm-body">
 <div class="sm-wrap" data-system-monitor data-refresh-interval="{{ $refreshInterval }}" data-refresh-save-url="{{ route('system-monitor.refresh') }}" data-move-up="{{ __('system-monitor::messages.move_up') }}" data-move-down="{{ __('system-monitor::messages.move_down') }}" data-drag-handle="{{ __('system-monitor::messages.drag_handle') }}">
@@ -87,6 +87,6 @@
         <div class="sm-settings-panel"><div class="sm-settings-head"><h2>{{ __('system-monitor::messages.customize_title') }}</h2><button class="sm-button" type="button" data-sm-close aria-label="{{ __('system-monitor::messages.close') }}">✕</button></div><p class="sm-settings-help">{{ __('system-monitor::messages.customize_help') }}</p><form class="sm-refresh-setting" method="POST" action="{{ route('system-monitor.refresh') }}">@csrf<label for="sm-refresh-interval">{{ __('system-monitor::messages.refresh_interval') }}</label><select id="sm-refresh-interval" class="sm-select" name="interval" data-sm-refresh-interval><option value="0" @selected($refreshInterval === 0)>{{ __('system-monitor::messages.refresh_disabled') }}</option><option value="15" @selected($refreshInterval === 15)>15 {{ __('system-monitor::messages.seconds') }}</option><option value="30" @selected($refreshInterval === 30)>30 {{ __('system-monitor::messages.seconds') }}</option><option value="60" @selected($refreshInterval === 60)>1 {{ __('system-monitor::messages.minute') }}</option><option value="300" @selected($refreshInterval === 300)>5 {{ __('system-monitor::messages.minutes') }}</option><option value="600" @selected($refreshInterval === 600)>10 {{ __('system-monitor::messages.minutes') }}</option></select><button class="sm-button" type="submit">{{ __('system-monitor::messages.save') }}</button></form><div data-sm-options></div><div class="sm-settings-foot"><button class="sm-button" type="button" data-sm-reset>{{ __('system-monitor::messages.reset_layout') }}</button><button class="sm-button" type="button" data-sm-close>{{ __('system-monitor::messages.done') }}</button></div></div>
     </div>
 </div>
-<script src="{{ asset('vendor/system-monitor/system-monitor.js') }}?v=0.1.28" defer></script>
+<script src="{{ asset('vendor/system-monitor/system-monitor.js') }}?v=0.1.29" defer></script>
 </body>
 </html>
