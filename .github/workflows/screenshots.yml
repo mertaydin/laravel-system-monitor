@@ -107,7 +107,7 @@ jobs:
           // Exercise the point-in-time PDF report without opening the host print dialog.
           await page.evaluate(() => { window.print = () => { document.body.dataset.printTest = 'true'; }; });
           page.once('dialog', dialog => dialog.accept('pdf'));
-          await page.getByRole('button', {name:'Export report'}).click();
+          await page.locator('[data-sm-report]').click();
           await page.waitForSelector('[data-sm-print-report]');
           const chartCount = await page.locator('[data-sm-print-report] .sm-print-chart').count();
           const metricRows = await page.locator('[data-sm-print-report] .sm-print-table tbody tr').count();
