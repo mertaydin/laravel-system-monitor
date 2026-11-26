@@ -1,3 +1,8 @@
+## v0.2.5 - 2026-11-26
+
+- Add a printable PDF report with current resource-utilization charts and a point-in-time metric table to the existing Export Report action.
+- Keep JSON and text report exports available and refresh published dashboard asset cache keys.
+
 ## v0.2.4 - 2026-11-26
 
 - Animate the memory, disk, and system-load gauge rings from empty to their measured values after the dashboard renders.
