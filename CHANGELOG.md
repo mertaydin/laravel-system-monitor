@@ -1,3 +1,9 @@
+## v0.3.2 - 2026-11-26
+
+- Rebuild the PDF report with a restrained, print-first A4 layout, a clear health summary, readable resource utilization bars, and a structured component table.
+- Improve report hierarchy, spacing, pagination, and status legibility while retaining Turkish and English labels.
+- Align dashboard CSS and JavaScript cache-busting values with v0.3.2.
+
 ## v0.3.1 - 2026-11-26
 
 - Align dashboard CSS and JavaScript cache-busting query values with the package release version.
