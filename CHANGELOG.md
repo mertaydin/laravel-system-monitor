@@ -1,7 +1,7 @@
-## v0.2.7 - 2026-11-26
+## v0.2.8 - 2026-11-26
 
-- Replace the browser prompt with an accessible, responsive export format picker and clear descriptions for each report type.
-- Refresh published dashboard asset cache keys.
+- Redesign the PDF export as a clean, compact A4 system status report with a clear health summary, resource utilization, and readable service table.
+- Add Turkish and English report labels, improve status classification, and tighten print pagination and table readability.
 
 ## v0.2.6 - 2026-11-26
 
