@@ -1,3 +1,9 @@
+## v0.3.3 - 2026-11-26
+
+- Rebuild the printable report with a restrained editorial layout, strong typographic hierarchy, precise spacing, and print-first resource and component sections.
+- Remove dashboard-style report cards in favor of a clean technical document suitable for operational review.
+- Refresh dashboard CSS and JavaScript cache keys.
+
 ## v0.3.2 - 2026-11-26
 
 - Rebuild the PDF report with a restrained, print-first A4 layout, a clear health summary, readable resource utilization bars, and a structured component table.
