@@ -175,3 +175,25 @@ apply();
     });
     header.appendChild(button);
 })();
+
+
+/* Animate resource gauges after the dashboard has rendered. */
+(() => {
+    'use strict';
+    const gauges = [...document.querySelectorAll('[data-sm-gauge-target]')];
+    if (!gauges.length) return;
+
+    const animate = () => {
+        gauges.forEach(gauge => {
+            const target = Math.max(0, Math.min(289, Number(gauge.dataset.smGaugeTarget) || 0));
+            gauge.style.strokeDasharray = `\u0024{target} 289`;
+        });
+    };
+
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
+        animate();
+        return;
+    }
+
+    requestAnimationFrame(() => requestAnimationFrame(animate));
+})();
