@@ -8,7 +8,7 @@
         <meta http-equiv="refresh" content="{{ $refreshInterval }};url={{ route('system-monitor.index', ['refresh' => 1, '_sm_refresh' => now()->timestamp]) }}">
     @endif
     <title>{{ $title }}</title>
-    <link rel="stylesheet" href="{{ asset('vendor/system-monitor/system-monitor.css') }}?v=0.1.31">
+    <link rel="stylesheet" href="{{ asset('vendor/system-monitor/system-monitor.css') }}?v=0.1.32">
 </head>
 <body class="sm-body">
 <div class="sm-wrap" data-system-monitor data-refresh-interval="{{ $refreshInterval }}" data-refresh-save-url="{{ route('system-monitor.refresh') }}" data-move-up="{{ __('system-monitor::messages.move_up') }}" data-move-down="{{ __('system-monitor::messages.move_down') }}" data-drag-handle="{{ __('system-monitor::messages.drag_handle') }}">
