@@ -1,3 +1,7 @@
+## v0.2.9 - 2026-11-26
+
+- Localize the export format dialog and its descriptions according to the dashboard language, including Turkish.
+
 ## v0.2.8 - 2026-11-26
 
 - Redesign the PDF export as a clean, compact A4 system status report with a clear health summary, resource utilization, and readable service table.
