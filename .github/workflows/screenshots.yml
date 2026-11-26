@@ -108,7 +108,7 @@ jobs:
           await page.evaluate(() => { window.print = () => { document.body.dataset.printTest = 'true'; }; });
           page.once('dialog', dialog => dialog.accept('pdf'));
           await page.locator('[data-sm-report]').click();
-          await page.waitForSelector('[data-sm-print-report]');
+          await page.waitForSelector('[data-sm-print-report]', {state:'attached'});
           const chartCount = await page.locator('[data-sm-print-report] .sm-print-chart').count();
           const metricRows = await page.locator('[data-sm-print-report] .sm-print-table tbody tr').count();
           if (chartCount !== 1 || metricRows < 1) {
