@@ -1,3 +1,9 @@
+## v0.2.4 - 2026-11-26
+
+- Animate the memory, disk, and system-load gauge rings from empty to their measured values after the dashboard renders.
+- Use a smooth 2.2-second transition and respect reduced-motion accessibility preferences.
+- Refresh published dashboard asset cache keys so updated JavaScript and CSS are loaded after upgrading.
+
 ## v0.2.3 - 2026-11-22
 
 - Add `barryvdh/laravel-ide-helper` as a development dependency, selecting a compatible release for the supported Laravel versions.
