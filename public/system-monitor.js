@@ -164,70 +164,136 @@ apply();
         section.className = 'sm-print-report';
         section.dataset.smPrintReport = 'true';
         section.setAttribute('aria-label', 'System monitor PDF report');
-        addText(section, 'p', 'SYSTEM MONITOR · CURRENT SNAPSHOT', 'sm-print-eyebrow');
-        addText(section, 'h1', report.page_title || 'System Monitor', 'sm-print-title');
-        addText(section, 'p', 'Generated: ' + new Date(report.generated_at).toLocaleString(), 'sm-print-meta');
-        addText(section, 'p', report.last_checked, 'sm-print-meta');
-        const health = addText(section, 'div', report.overall_health || 'N/A', 'sm-print-health');
-        health.dataset.health = /attention|check|required|unhealthy|critical/i.test(report.overall_health) ? 'warning' : 'ok';
+
+        const masthead = document.createElement('div');
+        masthead.className = 'sm-print-masthead';
+        const brand = document.createElement('div');
+        brand.className = 'sm-print-brand';
+        addText(brand, 'span', 'SM', 'sm-print-brand-mark');
+        const brandCopy = document.createElement('div');
+        addText(brandCopy, 'strong', 'SYSTEM MONITOR', 'sm-print-brand-name');
+        addText(brandCopy, 'span', 'INFRASTRUCTURE HEALTH REPORT', 'sm-print-brand-caption');
+        brand.appendChild(brandCopy);
+        addText(masthead, 'span', 'LIVE SNAPSHOT', 'sm-print-live');
+        masthead.appendChild(brand);
+        section.appendChild(masthead);
+
+        const intro = document.createElement('div');
+        intro.className = 'sm-print-intro';
+        addText(intro, 'p', 'SYSTEM OVERVIEW', 'sm-print-eyebrow');
+        addText(intro, 'h1', report.page_title || 'System Monitor', 'sm-print-title');
+        addText(intro, 'p', 'A point-in-time view of your application and server environment.', 'sm-print-subtitle');
+        const meta = document.createElement('div');
+        meta.className = 'sm-print-meta-grid';
+        const generated = new Date(report.generated_at);
+        [['REPORT GENERATED', generated.toLocaleString()], ['LAST METRICS CHECK', report.last_checked || 'Not available']]
+            .forEach(([label, value]) => {
+                const item = document.createElement('div');
+                addText(item, 'span', label, 'sm-print-meta-label');
+                addText(item, 'strong', value, 'sm-print-meta-value');
+                meta.appendChild(item);
+            });
+        intro.appendChild(meta);
+        section.appendChild(intro);
+
+        const health = document.createElement('div');
+        health.className = 'sm-print-health-panel';
+        const healthCopy = document.createElement('div');
+        addText(healthCopy, 'span', 'OVERALL SYSTEM STATUS', 'sm-print-meta-label');
+        addText(healthCopy, 'strong', report.overall_health || 'Status unavailable', 'sm-print-health-value');
+        health.appendChild(healthCopy);
+        const healthState = /attention|check|required|unhealthy|critical|warning|degraded/i.test(report.overall_health) ? 'warning' : 'ok';
+        health.dataset.health = healthState;
+        addText(health, 'span', healthState === 'warning' ? 'REVIEW REQUIRED' : 'OPERATIONAL', 'sm-print-health-tag');
+        section.appendChild(health);
 
         const gauges = report.gauges.filter(item => item.value !== null && Number.isFinite(item.value));
         if (gauges.length) {
-            addText(section, 'h2', 'Resource utilization', 'sm-print-heading');
-            const ns = 'http://www.w3.org/2000/svg';
-            const svg = document.createElementNS(ns, 'svg');
-            svg.setAttribute('viewBox', '0 0 760 ' + (gauges.length * 76 + 20));
-            svg.setAttribute('role', 'img');
-            svg.setAttribute('aria-label', 'Current resource utilization chart');
-            svg.classList.add('sm-print-chart');
-            gauges.forEach((item, index) => {
-                const y = index * 76 + 28;
-                const label = document.createElementNS(ns, 'text');
-                label.setAttribute('x', '0'); label.setAttribute('y', String(y + 5));
-                label.classList.add('sm-print-chart-label'); label.textContent = item.label; svg.appendChild(label);
-                const track = document.createElementNS(ns, 'rect');
-                track.setAttribute('x', '220'); track.setAttribute('y', String(y - 14));
-                track.setAttribute('width', '470'); track.setAttribute('height', '22'); track.setAttribute('rx', '7');
-                track.classList.add('sm-print-chart-track'); svg.appendChild(track);
-                const bar = document.createElementNS(ns, 'rect');
-                bar.setAttribute('x', '220'); bar.setAttribute('y', String(y - 14));
-                bar.setAttribute('width', String(470 * Math.max(0, Math.min(100, item.value)) / 100));
-                bar.setAttribute('height', '22'); bar.setAttribute('rx', '7');
-                bar.classList.add('sm-print-chart-bar', item.value >= 90 ? 'is-critical' : (item.value >= 75 ? 'is-warning' : 'is-healthy'));
-                svg.appendChild(bar);
-                const value = document.createElementNS(ns, 'text');
-                value.setAttribute('x', '710'); value.setAttribute('y', String(y + 5));
-                value.classList.add('sm-print-chart-value'); value.textContent = item.display; svg.appendChild(value);
+            const chartSection = document.createElement('section');
+            chartSection.className = 'sm-print-section';
+            addText(chartSection, 'p', '01 / CAPACITY', 'sm-print-section-kicker');
+            addText(chartSection, 'h2', 'Resource utilization', 'sm-print-heading');
+            addText(chartSection, 'p', 'Current usage levels across the primary server resources.', 'sm-print-section-desc');
+            const chartGrid = document.createElement('div');
+            chartGrid.className = 'sm-print-gauge-grid';
+            gauges.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'sm-print-gauge-card';
+                const top = document.createElement('div');
+                top.className = 'sm-print-gauge-top';
+                addText(top, 'span', item.label, 'sm-print-gauge-label');
+                addText(top, 'strong', item.display, 'sm-print-gauge-value');
+                card.appendChild(top);
+                const track = document.createElement('div');
+                track.className = 'sm-print-gauge-track';
+                const fill = document.createElement('span');
+                fill.className = 'sm-print-gauge-fill ' + (item.value >= 90 ? 'is-critical' : (item.value >= 75 ? 'is-warning' : 'is-healthy'));
+                fill.style.width = Math.max(0, Math.min(100, item.value)) + '%';
+                track.appendChild(fill);
+                card.appendChild(track);
+                if (item.details) addText(card, 'p', item.details, 'sm-print-gauge-detail');
+                chartGrid.appendChild(card);
             });
-            section.appendChild(svg);
+            chartSection.appendChild(chartGrid);
+            section.appendChild(chartSection);
         }
 
-        addText(section, 'h2', 'Metric details', 'sm-print-heading');
-        const table = document.createElement('table'); table.className = 'sm-print-table';
-        const thead = document.createElement('thead'); const heading = document.createElement('tr');
-        ['Metric', 'Current value', 'Details', 'Status'].forEach(value => addText(heading, 'th', value));
-        thead.appendChild(heading); table.appendChild(thead);
+        const metricsSection = document.createElement('section');
+        metricsSection.className = 'sm-print-section sm-print-metrics-section';
+        addText(metricsSection, 'p', '02 / COMPONENTS', 'sm-print-section-kicker');
+        addText(metricsSection, 'h2', 'Metric details', 'sm-print-heading');
+        addText(metricsSection, 'p', 'Configuration and availability details captured at report time.', 'sm-print-section-desc');
+        const table = document.createElement('table');
+        table.className = 'sm-print-table';
+        const thead = document.createElement('thead');
+        const heading = document.createElement('tr');
+        ['Component', 'Current value', 'Details', 'Status'].forEach(value => addText(heading, 'th', value));
+        thead.appendChild(heading);
+        table.appendChild(thead);
         const tbody = document.createElement('tbody');
         report.metrics.forEach(metric => {
             const row = document.createElement('tr');
-            [metric.section, metric.value, metric.details, metric.status.replace('sm-card-dot', '').trim() || '—']
-                .forEach(value => addText(row, 'td', value || '—'));
+            const rawStatus = metric.status || '';
+            const state = /bad|warn/i.test(rawStatus) ? (/warn/i.test(rawStatus) ? 'warning' : 'critical') : 'healthy';
+            addText(row, 'td', metric.section, 'sm-print-component');
+            addText(row, 'td', metric.value || '—', 'sm-print-current');
+            addText(row, 'td', metric.details || '—', 'sm-print-details');
+            const statusCell = document.createElement('td');
+            const status = addText(statusCell, 'span', state === 'critical' ? 'Critical' : (state === 'warning' ? 'Warning' : 'Normal'), 'sm-print-status');
+            status.dataset.state = state;
+            row.appendChild(statusCell);
             tbody.appendChild(row);
         });
-        table.appendChild(tbody); section.appendChild(table);
-        addText(section, 'p', 'This report contains the values currently displayed by Laravel System Monitor. It is a point-in-time snapshot, not historical telemetry.', 'sm-print-footnote');
+        table.appendChild(tbody);
+        metricsSection.appendChild(table);
+        section.appendChild(metricsSection);
+
+        const note = document.createElement('div');
+        note.className = 'sm-print-note';
+        addText(note, 'strong', 'About this report');
+        addText(note, 'p', 'This document reflects the values displayed by Laravel System Monitor when the export was created. It is a point-in-time snapshot and does not represent historical telemetry.');
+        section.appendChild(note);
+        const footer = document.createElement('footer');
+        addText(footer, 'span', 'LARAVEL SYSTEM MONITOR');
+        addText(footer, 'span', 'CONFIDENTIAL · INTERNAL OPERATIONS');
+        section.appendChild(footer);
 
         root.appendChild(section);
         const previousTitle = document.title;
         document.title = 'system-monitor-report-' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+        let cleaned = false;
         const cleanup = () => {
+            if (cleaned) return;
+            cleaned = true;
             document.body.removeAttribute('data-sm-print-active');
-            section.remove(); document.title = previousTitle;
+            section.remove();
+            document.title = previousTitle;
             window.removeEventListener('afterprint', cleanup);
         };
         window.addEventListener('afterprint', cleanup, { once: true });
         document.body.setAttribute('data-sm-print-active', 'true');
         window.print();
+        window.setTimeout(cleanup, 60000);
     };
     button.addEventListener('click', () => {
         const choice = window.prompt('Export format: json, txt, or pdf', 'pdf');
