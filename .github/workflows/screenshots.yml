@@ -103,6 +103,17 @@ jobs:
           if (!response || response.status() >= 400) throw new Error('Dashboard failed: '+response?.status());
           await page.waitForSelector('[data-widget="database"]');
           await page.screenshot({path:'../docs/images/dashboard-screenshot.png',fullPage:true});
+
+          // Exercise the point-in-time PDF report without opening the host print dialog.
+          await page.evaluate(() => { window.print = () => { document.body.dataset.printTest = 'true'; }; });
+          page.once('dialog', dialog => dialog.accept('pdf'));
+          await page.getByRole('button', {name:'Export report'}).click();
+          await page.waitForSelector('[data-sm-print-report]');
+          const chartCount = await page.locator('[data-sm-print-report] .sm-print-chart').count();
+          const metricRows = await page.locator('[data-sm-print-report] .sm-print-table tbody tr').count();
+          if (chartCount !== 1 || metricRows < 1) {
+            throw new Error('PDF report is missing its resource chart or metric table');
+          }
           await browser.close();
           NODE
       - name: Commit screenshot
