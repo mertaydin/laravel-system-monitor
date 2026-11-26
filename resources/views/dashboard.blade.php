@@ -8,7 +8,7 @@
         <meta http-equiv="refresh" content="{{ $refreshInterval }};url={{ route('system-monitor.index', ['refresh' => 1, '_sm_refresh' => now()->timestamp]) }}">
     @endif
     <title>{{ $title }}</title>
-    <link rel="stylesheet" href="{{ asset('vendor/system-monitor/system-monitor.css') }}?v=0.1.27">
+    <link rel="stylesheet" href="{{ asset('vendor/system-monitor/system-monitor.css') }}?v=0.1.28">
 </head>
 <body class="sm-body">
 <div class="sm-wrap" data-system-monitor data-refresh-interval="{{ $refreshInterval }}" data-refresh-save-url="{{ route('system-monitor.refresh') }}" data-move-up="{{ __('system-monitor::messages.move_up') }}" data-move-down="{{ __('system-monitor::messages.move_down') }}" data-drag-handle="{{ __('system-monitor::messages.drag_handle') }}">
@@ -56,7 +56,7 @@
             ['title' => __('system-monitor::messages.disk'), 'value' => $disk['percent'] ?? null, 'foot' => $fmt($disk['free'] ?? null).' '.__('system-monitor::messages.free')],
             ['title' => __('system-monitor::messages.cpu_load'), 'value' => isset($load[0], $server['cpu_cores']) && $server['cpu_cores'] ? min(100, round($load[0] / $server['cpu_cores'] * 100)) : null, 'foot' => $load ? __('system-monitor::messages.load_average').' '.implode(' · ', array_map(fn($v) => number_format($v, 2), $load)) : __('system-monitor::messages.latency_na')],
         ] as $gauge)
-            <article class="sm-gauge"><div class="sm-gauge-title">{{ $gauge['title'] }}</div><div class="sm-gauge-ring"><svg class="sm-gauge-svg" viewBox="0 0 120 120" aria-hidden="true"><circle class="sm-gauge-track" cx="60" cy="60" r="46"/><circle class="sm-gauge-progress" cx="60" cy="60" r="46" stroke-dasharray="{{ round(($gauge['value'] ?? 0) * 2.89, 1) }} 289" transform="rotate(-90 60 60)"/></svg><strong>{{ $gauge['value'] === null ? '—' : $gauge['value'].'%' }}</strong></div><div class="sm-gauge-foot">{{ $gauge['foot'] }}</div></article>
+            <article class="sm-gauge"><div class="sm-gauge-title">{{ $gauge['title'] }}</div><div class="sm-gauge-ring"><svg class="sm-gauge-svg" viewBox="0 0 120 120" aria-hidden="true"><circle class="sm-gauge-track" cx="60" cy="60" r="46"/><circle class="sm-gauge-progress" cx="60" cy="60" r="46" stroke-dasharray="0 289" data-sm-gauge-target="{{ round(max(0, min(100, $gauge['value'] ?? 0)) * 2.89, 1) }}" transform="rotate(-90 60 60)"/></svg><strong>{{ $gauge['value'] === null ? '—' : $gauge['value'].'%' }}</strong></div><div class="sm-gauge-foot">{{ $gauge['foot'] }}</div></article>
         @endforeach
     </section>
     <div class="sm-section"><h2>{{ __('system-monitor::messages.system_metrics') }}</h2><span>{{ __('system-monitor::messages.drag_hint') }}</span></div>
@@ -87,6 +87,6 @@
         <div class="sm-settings-panel"><div class="sm-settings-head"><h2>{{ __('system-monitor::messages.customize_title') }}</h2><button class="sm-button" type="button" data-sm-close aria-label="{{ __('system-monitor::messages.close') }}">✕</button></div><p class="sm-settings-help">{{ __('system-monitor::messages.customize_help') }}</p><form class="sm-refresh-setting" method="POST" action="{{ route('system-monitor.refresh') }}">@csrf<label for="sm-refresh-interval">{{ __('system-monitor::messages.refresh_interval') }}</label><select id="sm-refresh-interval" class="sm-select" name="interval" data-sm-refresh-interval><option value="0" @selected($refreshInterval === 0)>{{ __('system-monitor::messages.refresh_disabled') }}</option><option value="15" @selected($refreshInterval === 15)>15 {{ __('system-monitor::messages.seconds') }}</option><option value="30" @selected($refreshInterval === 30)>30 {{ __('system-monitor::messages.seconds') }}</option><option value="60" @selected($refreshInterval === 60)>1 {{ __('system-monitor::messages.minute') }}</option><option value="300" @selected($refreshInterval === 300)>5 {{ __('system-monitor::messages.minutes') }}</option><option value="600" @selected($refreshInterval === 600)>10 {{ __('system-monitor::messages.minutes') }}</option></select><button class="sm-button" type="submit">{{ __('system-monitor::messages.save') }}</button></form><div data-sm-options></div><div class="sm-settings-foot"><button class="sm-button" type="button" data-sm-reset>{{ __('system-monitor::messages.reset_layout') }}</button><button class="sm-button" type="button" data-sm-close>{{ __('system-monitor::messages.done') }}</button></div></div>
     </div>
 </div>
-<script src="{{ asset('vendor/system-monitor/system-monitor.js') }}?v=0.1.27" defer></script>
+<script src="{{ asset('vendor/system-monitor/system-monitor.js') }}?v=0.1.28" defer></script>
 </body>
 </html>
