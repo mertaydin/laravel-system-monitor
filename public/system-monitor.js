@@ -103,7 +103,7 @@ cards.forEach(card=>{
 });
 apply();
 })();
-/* Portable system report: browser-only export, no additional server permissions or dependencies. */
+/* Portable system report: JSON, text, and printable chart report. */
 (() => {
     'use strict';
     const root = document.querySelector('[data-system-monitor]');
@@ -114,40 +114,132 @@ apply();
     button.className = 'sm-button';
     button.dataset.smReport = 'true';
     button.textContent = 'Export report';
-    button.setAttribute('aria-label', 'Export system report as JSON or text');
-    const exportReport = format => {
-        const cards = [...root.querySelectorAll('.sm-card[data-widget]')].map(card => ({
+    button.setAttribute('aria-label', 'Export system report as JSON, text, or PDF');
+
+    const collectReport = () => {
+        const metrics = [...root.querySelectorAll('.sm-card[data-widget]')].map(card => ({
             section: card.dataset.title || card.dataset.widget,
             value: card.querySelector('.sm-value')?.textContent?.trim() || '',
             details: card.querySelector('.sm-meta')?.textContent?.trim() || '',
             status: card.querySelector('.sm-card-dot')?.className || ''
         }));
-        const report = {
+        const gauges = [...root.querySelectorAll('.sm-gauge')].map(gauge => {
+            const display = gauge.querySelector('.sm-gauge-ring strong')?.textContent?.trim() || '';
+            const match = display.match(/-?\d+(?:[.,]\d+)?/);
+            return {
+                label: gauge.querySelector('.sm-gauge-title')?.textContent?.trim() || '',
+                value: match ? Number(match[0].replace(',', '.')) : null,
+                display,
+                details: gauge.querySelector('.sm-gauge-foot')?.textContent?.trim() || ''
+            };
+        });
+        return {
             generated_at: new Date().toISOString(),
             page_title: document.title,
             last_checked: root.querySelector('[data-sm-last-checked]')?.textContent?.trim() || '',
             overall_health: root.querySelector('.sm-health')?.textContent?.trim() || '',
-            metrics: cards
+            gauges,
+            metrics
         };
-        const content = format === 'json'
-            ? JSON.stringify(report, null, 2)
-            : ['SYSTEM MONITOR REPORT', 'Generated: ' + report.generated_at, 'Last checked: ' + report.last_checked, 'Overall health: ' + report.overall_health, '', ...cards.flatMap(card => [card.section, card.value, card.details, ''])].join('\n');
-        const blob = new Blob([content], {type: format === 'json' ? 'application/json;charset=utf-8' : 'text/plain;charset=utf-8'});
-        const url = URL.createObjectURL(blob);
+    };
+    const download = (content, type, extension) => {
+        const url = URL.createObjectURL(new Blob([content], { type }));
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'system-monitor-report-' + new Date().toISOString().replace(/[:.]/g, '-') + '.' + format;
+        link.download = 'system-monitor-report-' + new Date().toISOString().replace(/[:.]/g, '-') + '.' + extension;
         document.body.appendChild(link);
         link.click();
         link.remove();
         URL.revokeObjectURL(url);
     };
+    const addText = (parent, tag, value, className) => {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        node.textContent = value;
+        parent.appendChild(node);
+        return node;
+    };
+    const exportPdf = report => {
+        const section = document.createElement('section');
+        section.className = 'sm-print-report';
+        section.dataset.smPrintReport = 'true';
+        section.setAttribute('aria-label', 'System monitor PDF report');
+        addText(section, 'p', 'SYSTEM MONITOR · CURRENT SNAPSHOT', 'sm-print-eyebrow');
+        addText(section, 'h1', report.page_title || 'System Monitor', 'sm-print-title');
+        addText(section, 'p', 'Generated: ' + new Date(report.generated_at).toLocaleString(), 'sm-print-meta');
+        addText(section, 'p', report.last_checked, 'sm-print-meta');
+        const health = addText(section, 'div', report.overall_health || 'N/A', 'sm-print-health');
+        health.dataset.health = /attention|check|required|unhealthy|critical/i.test(report.overall_health) ? 'warning' : 'ok';
+
+        const gauges = report.gauges.filter(item => item.value !== null && Number.isFinite(item.value));
+        if (gauges.length) {
+            addText(section, 'h2', 'Resource utilization', 'sm-print-heading');
+            const ns = 'http://www.w3.org/2000/svg';
+            const svg = document.createElementNS(ns, 'svg');
+            svg.setAttribute('viewBox', '0 0 760 ' + (gauges.length * 76 + 20));
+            svg.setAttribute('role', 'img');
+            svg.setAttribute('aria-label', 'Current resource utilization chart');
+            svg.classList.add('sm-print-chart');
+            gauges.forEach((item, index) => {
+                const y = index * 76 + 28;
+                const label = document.createElementNS(ns, 'text');
+                label.setAttribute('x', '0'); label.setAttribute('y', String(y + 5));
+                label.classList.add('sm-print-chart-label'); label.textContent = item.label; svg.appendChild(label);
+                const track = document.createElementNS(ns, 'rect');
+                track.setAttribute('x', '220'); track.setAttribute('y', String(y - 14));
+                track.setAttribute('width', '470'); track.setAttribute('height', '22'); track.setAttribute('rx', '7');
+                track.classList.add('sm-print-chart-track'); svg.appendChild(track);
+                const bar = document.createElementNS(ns, 'rect');
+                bar.setAttribute('x', '220'); bar.setAttribute('y', String(y - 14));
+                bar.setAttribute('width', String(470 * Math.max(0, Math.min(100, item.value)) / 100));
+                bar.setAttribute('height', '22'); bar.setAttribute('rx', '7');
+                bar.classList.add('sm-print-chart-bar', item.value >= 90 ? 'is-critical' : (item.value >= 75 ? 'is-warning' : 'is-healthy'));
+                svg.appendChild(bar);
+                const value = document.createElementNS(ns, 'text');
+                value.setAttribute('x', '710'); value.setAttribute('y', String(y + 5));
+                value.classList.add('sm-print-chart-value'); value.textContent = item.display; svg.appendChild(value);
+            });
+            section.appendChild(svg);
+        }
+
+        addText(section, 'h2', 'Metric details', 'sm-print-heading');
+        const table = document.createElement('table'); table.className = 'sm-print-table';
+        const thead = document.createElement('thead'); const heading = document.createElement('tr');
+        ['Metric', 'Current value', 'Details', 'Status'].forEach(value => addText(heading, 'th', value));
+        thead.appendChild(heading); table.appendChild(thead);
+        const tbody = document.createElement('tbody');
+        report.metrics.forEach(metric => {
+            const row = document.createElement('tr');
+            [metric.section, metric.value, metric.details, metric.status.replace('sm-card-dot', '').trim() || '—']
+                .forEach(value => addText(row, 'td', value || '—'));
+            tbody.appendChild(row);
+        });
+        table.appendChild(tbody); section.appendChild(table);
+        addText(section, 'p', 'This report contains the values currently displayed by Laravel System Monitor. It is a point-in-time snapshot, not historical telemetry.', 'sm-print-footnote');
+
+        root.appendChild(section);
+        const previousTitle = document.title;
+        document.title = 'system-monitor-report-' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+        const cleanup = () => {
+            document.body.removeAttribute('data-sm-print-active');
+            section.remove(); document.title = previousTitle;
+            window.removeEventListener('afterprint', cleanup);
+        };
+        window.addEventListener('afterprint', cleanup, { once: true });
+        document.body.setAttribute('data-sm-print-active', 'true');
+        window.print();
+    };
     button.addEventListener('click', () => {
-        const choice = window.prompt('Enter export format: json or txt', 'json');
+        const choice = window.prompt('Export format: json, txt, or pdf', 'pdf');
         if (choice === null) return;
         const format = choice.trim().toLowerCase();
-        if (format === 'json' || format === 'txt') exportReport(format);
-        else window.alert('Choose json or txt.');
+        const report = collectReport();
+        if (format === 'json') download(JSON.stringify(report, null, 2), 'application/json;charset=utf-8', 'json');
+        else if (format === 'txt') {
+            const lines = ['SYSTEM MONITOR REPORT', 'Generated: ' + report.generated_at, 'Last checked: ' + report.last_checked, 'Overall health: ' + report.overall_health, '', ...report.metrics.flatMap(metric => [metric.section, metric.value, metric.details, ''])];
+            download(lines.join('\n'), 'text/plain;charset=utf-8', 'txt');
+        } else if (format === 'pdf') exportPdf(report);
+        else window.alert('Choose json, txt, or pdf.');
     });
     header.appendChild(button);
 })();
