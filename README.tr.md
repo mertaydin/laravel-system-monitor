@@ -25,6 +25,7 @@ Laravel için hafif, framework ile yerel çalışan bir izleme paneli. Redis, Ho
 - **Cache ve kuyruk:** Cache store sağlığı, kuyruk sürücüsü, veritabanı kuyruğu derinliği ve tablolar mevcutsa başarısız iş sayısı.
 - **Temel güvenlik kontrolleri:** APP_KEY varlığı, debug modu ve APP_URL üzerinden HTTPS yapılandırması.
 - **Özelleştirilebilir panel:** Metrik kartlarını ayrı ayrı gizleme/gösterme, sürükleyerek sıralama ve varsayılan düzene dönme.
+- **Rapor dışa aktarma:** o anki panel verilerini JSON veya metin olarak indirin; kaynak kullanım grafiklerini ve metrik detaylarını içeren PDF raporunu yazdırın.
 - **Altı panel dili:** Tarayıcı oturum tercihiyle İngilizce, Türkçe, Arapça (RTL), İspanyolca, Hintçe ve Basitleştirilmiş Çince.
 - **Koyu ve açık temalar:** Gece/gündüz görünümü; seçilen tema mevcut tarayıcıda hatırlanır.
 - **İsteğe bağlı servis bağımlılığı yok:** Redis, Horizon, bulut depolama ve QR entegrasyonları gerekmez.
