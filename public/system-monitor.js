@@ -160,135 +160,166 @@ apply();
         return node;
     };
     const exportPdf = report => {
-        const isTr = document.documentElement.lang.toLowerCase().startsWith('tr');
+        const isTr = (document.documentElement.lang || '').toLowerCase().startsWith('tr');
         const t = (en, tr) => isTr ? tr : en;
-        const section = document.createElement('section');
+        const section = document.createElement('main');
         section.className = 'sm-print-report';
         section.dataset.smPrintReport = 'true';
-        section.setAttribute('aria-label', t('System status report', 'Sistem durum raporu'));
+        section.setAttribute('aria-label', t('Infrastructure report', 'Altyapı raporu'));
 
         const generated = new Date(report.generated_at);
-        const dateText = generated.toLocaleString(document.documentElement.lang || undefined, { dateStyle: 'medium', timeStyle: 'short' });
-        const header = document.createElement('header');
-        header.className = 'sm-print-header';
-        const identity = document.createElement('div');
-        identity.className = 'sm-print-identity';
-        addText(identity, 'span', 'SM', 'sm-print-mark');
-        const identityCopy = document.createElement('div');
-        addText(identityCopy, 'strong', 'SYSTEM MONITOR', 'sm-print-brand-name');
-        addText(identityCopy, 'span', t('Infrastructure report', 'Altyapı durum raporu'), 'sm-print-brand-caption');
-        identity.appendChild(identityCopy);
-        header.appendChild(identity);
-        const headerMeta = document.createElement('div');
-        headerMeta.className = 'sm-print-header-meta';
-        addText(headerMeta, 'span', t('GENERATED', 'OLUŞTURULMA'), 'sm-print-meta-label');
-        addText(headerMeta, 'strong', dateText);
-        header.appendChild(headerMeta);
-        section.appendChild(header);
+        const dateText = generated.toLocaleString(document.documentElement.lang || undefined, { dateStyle: 'long', timeStyle: 'short' });
+        const statusFor = metric => {
+            const raw = metric.status || '';
+            if (/sm-bad|bad|critical|error/i.test(raw)) return 'critical';
+            if (/sm-warn|warn|warning/i.test(raw)) return 'warning';
+            if (/sm-good|good|ok/i.test(raw)) return 'healthy';
+            return 'unknown';
+        };
+        const statusLabel = state => state === 'critical' ? t('Critical', 'Kritik')
+            : state === 'warning' ? t('Attention', 'Dikkat')
+            : state === 'healthy' ? t('Normal', 'Normal') : t('Not reported', 'Belirtilmedi');
+        const states = report.metrics.map(statusFor);
+        const criticalCount = states.filter(state => state === 'critical').length;
+        const warningCount = states.filter(state => state === 'warning').length;
+        const healthyCount = states.filter(state => state === 'healthy').length;
+        const overallState = criticalCount ? 'critical' : warningCount ? 'warning'
+            : /attention|check|required|unhealthy|critical|warning|degraded|kontrol|dikkat|sorun/i.test(report.overall_health || '') ? 'warning' : 'healthy';
 
-        const intro = document.createElement('div');
-        intro.className = 'sm-print-intro';
-        addText(intro, 'p', t('SYSTEM HEALTH / SNAPSHOT', 'SİSTEM SAĞLIĞI / ANLIK GÖRÜNTÜ'), 'sm-print-eyebrow');
-        addText(intro, 'h1', report.page_title || 'System Monitor', 'sm-print-title');
-        addText(intro, 'p', t('A concise overview of server capacity and application services.', 'Sunucu kapasitesi ve uygulama servislerinin özet görünümü.'), 'sm-print-subtitle');
-        section.appendChild(intro);
+        const masthead = document.createElement('header');
+        masthead.className = 'sm-print-masthead';
+        const brand = document.createElement('div');
+        brand.className = 'sm-print-brand';
+        const mark = addText(brand, 'span', 'SM', 'sm-print-brand-mark');
+        mark.setAttribute('aria-hidden', 'true');
+        const brandCopy = document.createElement('div');
+        addText(brandCopy, 'strong', 'SYSTEM MONITOR');
+        addText(brandCopy, 'span', t('OPERATIONS INTELLIGENCE', 'SİSTEM OPERASYONLARI'));
+        brand.appendChild(brandCopy);
+        masthead.appendChild(brand);
+        const reportMeta = document.createElement('div');
+        reportMeta.className = 'sm-print-report-meta';
+        addText(reportMeta, 'span', t('GENERATED ON', 'RAPOR TARİHİ'));
+        addText(reportMeta, 'strong', dateText);
+        if (report.last_checked) addText(reportMeta, 'small', t('Last checked: ', 'Son kontrol: ') + report.last_checked);
+        masthead.appendChild(reportMeta);
+        section.appendChild(masthead);
 
-        const healthState = /attention|check|required|unhealthy|critical|warning|degraded|kontrol|dikkat|sorun/i.test(report.overall_health || '') ? 'warning' : 'ok';
-        const health = document.createElement('div');
-        health.className = 'sm-print-health';
-        health.dataset.health = healthState;
-        const healthMain = document.createElement('div');
-        addText(healthMain, 'span', t('OVERALL STATUS', 'GENEL DURUM'), 'sm-print-meta-label');
-        addText(healthMain, 'strong', report.overall_health || t('Status unavailable', 'Durum bilgisi yok'), 'sm-print-health-value');
-        health.appendChild(healthMain);
-        addText(health, 'span', healthState === 'warning' ? t('ACTION MAY BE REQUIRED', 'MÜDAHALE GEREKEBİLİR') : t('OPERATIONAL', 'ÇALIŞIYOR'), 'sm-print-health-chip');
-        section.appendChild(health);
+        const hero = document.createElement('section');
+        hero.className = 'sm-print-hero';
+        const heroCopy = document.createElement('div');
+        addText(heroCopy, 'p', t('INFRASTRUCTURE / LIVE SNAPSHOT', 'ALTYAPI / ANLIK DURUM'), 'sm-print-kicker');
+        addText(heroCopy, 'h1', t('System overview', 'Sistem genel görünümü'), 'sm-print-title');
+        addText(heroCopy, 'p', t('A point-in-time view of platform resources and service readiness.', 'Platform kaynaklarının ve servislerin rapor anındaki durum özeti.'), 'sm-print-lede');
+        hero.appendChild(heroCopy);
+        const heroStatus = document.createElement('div');
+        heroStatus.className = 'sm-print-hero-status';
+        heroStatus.dataset.state = overallState;
+        addText(heroStatus, 'span', t('OVERALL HEALTH', 'GENEL SAĞLIK'));
+        addText(heroStatus, 'strong', report.overall_health || statusLabel(overallState));
+        addText(heroStatus, 'small', overallState === 'critical' ? t('Critical issues detected', 'Kritik sorun tespit edildi')
+            : overallState === 'warning' ? t('Review recommended', 'Kontrol önerilir')
+            : t('No reported issues', 'Bildirilen sorun yok'));
+        hero.appendChild(heroStatus);
+        section.appendChild(hero);
+
+        const summary = document.createElement('section');
+        summary.className = 'sm-print-summary';
+        [
+            { value: String(report.metrics.length), label: t('COMPONENTS CHECKED', 'KONTROL EDİLEN BİLEŞEN') },
+            { value: String(healthyCount), label: t('NORMAL', 'NORMAL'), state: 'healthy' },
+            { value: String(warningCount), label: t('WARNINGS', 'UYARI'), state: 'warning' },
+            { value: String(criticalCount), label: t('CRITICAL', 'KRİTİK'), state: 'critical' }
+        ].forEach(item => {
+            const tile = document.createElement('article');
+            tile.className = 'sm-print-summary-tile' + (item.state ? ' is-' + item.state : '');
+            addText(tile, 'strong', item.value);
+            addText(tile, 'span', item.label);
+            summary.appendChild(tile);
+        });
+        section.appendChild(summary);
 
         const gauges = report.gauges.filter(item => item.value !== null && Number.isFinite(item.value));
         if (gauges.length) {
             const capacity = document.createElement('section');
-            capacity.className = 'sm-print-section sm-print-capacity';
-            const sectionHead = document.createElement('div');
-            sectionHead.className = 'sm-print-section-head';
-            addText(sectionHead, 'span', '01', 'sm-print-section-number');
-            const sectionTitle = document.createElement('div');
-            addText(sectionTitle, 'h2', t('Resource utilization', 'Kaynak kullanımı'));
-            addText(sectionTitle, 'p', t('Current utilization at the time of export', 'Rapor oluşturulduğu andaki kaynak kullanımı'));
-            sectionHead.appendChild(sectionTitle);
-            capacity.appendChild(sectionHead);
-            const chartGrid = document.createElement('div');
-            chartGrid.className = 'sm-print-gauge-grid';
+            capacity.className = 'sm-print-capacity';
+            const heading = document.createElement('div');
+            heading.className = 'sm-print-section-heading';
+            addText(heading, 'span', '01 / CAPACITY', 'sm-print-section-index');
+            addText(heading, 'h2', t('Resource profile', 'Kaynak profili'));
+            addText(heading, 'p', t('Utilization captured at export time', 'Dışa aktarma anında ölçülen kullanım'));
+            capacity.appendChild(heading);
+            const grid = document.createElement('div');
+            grid.className = 'sm-print-resource-grid';
             gauges.forEach(item => {
                 const card = document.createElement('article');
-                card.className = 'sm-print-gauge-card';
-                const top = document.createElement('div');
-                top.className = 'sm-print-gauge-top';
-                addText(top, 'span', item.label, 'sm-print-gauge-label');
-                addText(top, 'strong', item.display, 'sm-print-gauge-value');
-                card.appendChild(top);
-                const track = document.createElement('div');
-                track.className = 'sm-print-gauge-track';
-                const fill = document.createElement('span');
-                fill.className = 'sm-print-gauge-fill ' + (item.value >= 90 ? 'is-critical' : (item.value >= 75 ? 'is-warning' : 'is-healthy'));
-                fill.style.width = Math.max(0, Math.min(100, item.value)) + '%';
-                track.appendChild(fill);
-                card.appendChild(track);
-                if (item.details) addText(card, 'p', item.details, 'sm-print-gauge-detail');
-                chartGrid.appendChild(card);
+                card.className = 'sm-print-resource';
+                const ring = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                ring.setAttribute('viewBox', '0 0 64 64');
+                ring.setAttribute('class', 'sm-print-ring');
+                ring.setAttribute('role', 'img');
+                ring.setAttribute('aria-label', item.label + ': ' + item.display);
+                const track = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                track.setAttribute('cx', '32'); track.setAttribute('cy', '32'); track.setAttribute('r', '25');
+                track.setAttribute('class', 'sm-print-ring-track');
+                const progress = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                progress.setAttribute('cx', '32'); progress.setAttribute('cy', '32'); progress.setAttribute('r', '25');
+                progress.setAttribute('class', 'sm-print-ring-value');
+                progress.setAttribute('pathLength', '100');
+                progress.setAttribute('stroke-dasharray', Math.max(0, Math.min(100, item.value)) + ' 100');
+                progress.setAttribute('transform', 'rotate(-90 32 32)');
+                ring.append(track, progress);
+                const value = addText(card, 'strong', item.display, 'sm-print-resource-value');
+                card.append(ring, value);
+                addText(card, 'h3', item.label, 'sm-print-resource-label');
+                if (item.details) addText(card, 'p', item.details, 'sm-print-resource-detail');
+                grid.appendChild(card);
             });
-            capacity.appendChild(chartGrid);
+            capacity.appendChild(grid);
             section.appendChild(capacity);
         }
 
-        const metricsSection = document.createElement('section');
-        metricsSection.className = 'sm-print-section sm-print-metrics-section';
-        const metricsHead = document.createElement('div');
-        metricsHead.className = 'sm-print-section-head';
-        addText(metricsHead, 'span', '02', 'sm-print-section-number');
-        const metricsTitle = document.createElement('div');
-        addText(metricsTitle, 'h2', t('Service details', 'Servis ayrıntıları'));
-        addText(metricsTitle, 'p', t('Application components and their current reported values', 'Uygulama bileşenleri ve mevcut durumları'));
-        metricsHead.appendChild(metricsTitle);
-        metricsSection.appendChild(metricsHead);
-
-        const table = document.createElement('table');
-        table.className = 'sm-print-table';
-        const thead = document.createElement('thead');
-        const heading = document.createElement('tr');
-        [t('COMPONENT', 'BİLEŞEN'), t('VALUE', 'DEĞER'), t('DETAILS', 'AYRINTI'), t('STATE', 'DURUM')].forEach(value => addText(heading, 'th', value));
-        thead.appendChild(heading);
-        table.appendChild(thead);
-        const tbody = document.createElement('tbody');
+        const services = document.createElement('section');
+        services.className = 'sm-print-services';
+        const serviceHeading = document.createElement('div');
+        serviceHeading.className = 'sm-print-section-heading';
+        addText(serviceHeading, 'span', '02 / SERVICE MAP', 'sm-print-section-index');
+        addText(serviceHeading, 'h2', t('Service inventory', 'Servis envanteri'));
+        addText(serviceHeading, 'p', t('Component-by-component status at the time of this report', 'Rapor anında bileşen bazında durum dökümü'));
+        services.appendChild(serviceHeading);
+        const serviceGrid = document.createElement('div');
+        serviceGrid.className = 'sm-print-service-grid';
         report.metrics.forEach(metric => {
-            const row = document.createElement('tr');
-            const rawStatus = metric.status || '';
-            const state = /sm-bad|bad|critical|error/i.test(rawStatus) ? 'critical' : (/sm-warn|warn|warning/i.test(rawStatus) ? 'warning' : (/sm-good|good|ok/i.test(rawStatus) ? 'healthy' : 'unknown'));
-            addText(row, 'td', metric.section, 'sm-print-component');
-            addText(row, 'td', metric.value || '—', 'sm-print-current');
-            addText(row, 'td', metric.details || '—', 'sm-print-details');
-            const statusCell = document.createElement('td');
-            const label = state === 'critical' ? t('Critical', 'Kritik') : state === 'warning' ? t('Warning', 'Uyarı') : state === 'healthy' ? t('Normal', 'Normal') : t('Not reported', 'Belirtilmedi');
-            const status = addText(statusCell, 'span', label, 'sm-print-status');
-            status.dataset.state = state;
-            row.appendChild(statusCell);
-            tbody.appendChild(row);
+            const state = statusFor(metric);
+            const card = document.createElement('article');
+            card.className = 'sm-print-service-card';
+            card.dataset.state = state;
+            const top = document.createElement('div');
+            top.className = 'sm-print-service-top';
+            addText(top, 'h3', metric.section || t('Unnamed component', 'Adsız bileşen'));
+            const badge = addText(top, 'span', statusLabel(state), 'sm-print-service-state');
+            badge.dataset.state = state;
+            card.appendChild(top);
+            addText(card, 'strong', metric.value || '—', 'sm-print-service-value');
+            if (metric.details) addText(card, 'p', metric.details, 'sm-print-service-detail');
+            serviceGrid.appendChild(card);
         });
-        table.appendChild(tbody);
-        metricsSection.appendChild(table);
-        section.appendChild(metricsSection);
+        services.appendChild(serviceGrid);
+        section.appendChild(services);
 
-        const note = document.createElement('p');
+        const note = document.createElement('aside');
         note.className = 'sm-print-note';
-        note.textContent = t('This report is a point-in-time snapshot of the values visible in System Monitor. It is not historical telemetry.', 'Bu rapor, dışa aktarma anında System Monitor üzerinde görünen değerlerin anlık görüntüsüdür; geçmişe dönük izleme verisi değildir.');
+        addText(note, 'strong', t('READING THIS REPORT', 'RAPOR HAKKINDA'));
+        addText(note, 'p', t('This document records the values visible in the dashboard at the moment it was generated. It is a snapshot, not historical monitoring data.', 'Bu belge, oluşturulduğu anda kontrol panelinde görünen değerleri kaydeder. Geçmişe dönük izleme verisi değil, anlık durum raporudur.'));
         section.appendChild(note);
         const footer = document.createElement('footer');
-        addText(footer, 'span', t('LARAVEL SYSTEM MONITOR', 'LARAVEL SYSTEM MONITOR'));
-        addText(footer, 'span', t('SYSTEM STATUS REPORT', 'SİSTEM DURUM RAPORU'));
+        addText(footer, 'span', 'LARAVEL SYSTEM MONITOR');
+        addText(footer, 'span', t('CONFIDENTIAL · INTERNAL OPERATIONS', 'KURUM İÇİ · SİSTEM OPERASYONLARI'));
         section.appendChild(footer);
 
         root.appendChild(section);
         const previousTitle = document.title;
-        document.title = 'system-monitor-report-' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+        document.title = 'system-monitor-overview-' + new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
         let cleaned = false;
         const cleanup = () => {
             if (cleaned) return;
