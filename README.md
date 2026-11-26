@@ -24,7 +24,8 @@ A lightweight, framework-native monitoring dashboard for Laravel. Get a quick vi
 - **Database:** connection status, driver and a lightweight `SELECT 1` latency check.
 - **Cache and queue:** cache-store health, queue driver, database queue depth and failed-job count when those tables exist.
 - **Basic security checks:** APP_KEY presence, debug mode and HTTPS configuration derived from APP_URL.
-- **Customizable dashboard:** hide or show individual metric cards, drag cards to reorder them, and reset the layout.\n- **Six dashboard languages:** English, Turkish, Arabic (RTL), Spanish, Hindi and Simplified Chinese, with a per-browser session preference.\n- **Dark and light themes:** switch between night and day modes; the selected theme is remembered in the current browser.
+- **Customizable dashboard:** hide or show individual metric cards, drag cards to reorder them, and reset the layout.
+- **Export reports:** download the current dashboard snapshot as JSON or text, or print a PDF report with resource charts and metric details.\n- **Six dashboard languages:** English, Turkish, Arabic (RTL), Spanish, Hindi and Simplified Chinese, with a per-browser session preference.\n- **Dark and light themes:** switch between night and day modes; the selected theme is remembered in the current browser.
 - **No optional service dependency:** Redis, Horizon, cloud storage and QR integrations are not required.
 - **Low overhead:** collector snapshot caching is enabled by default.
 - **Read-only:** the package does not run arbitrary shell commands or modify application data.
