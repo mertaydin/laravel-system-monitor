@@ -305,6 +305,8 @@ apply();
     };
     const openFormatPicker = () => {
         if (document.querySelector('[data-sm-export-dialog]')) return;
+        const isTurkish = (document.documentElement.lang || '').toLowerCase().startsWith('tr');
+        const text = (english, turkish) => isTurkish ? turkish : english;
         const overlay = document.createElement('div');
         overlay.className = 'sm-export-overlay';
         overlay.dataset.smExportDialog = 'true';
@@ -313,20 +315,23 @@ apply();
         dialog.setAttribute('role', 'dialog');
         dialog.setAttribute('aria-modal', 'true');
         dialog.setAttribute('aria-labelledby', 'sm-export-title');
+        dialog.setAttribute('aria-describedby', 'sm-export-description');
         const head = document.createElement('div');
         head.className = 'sm-export-dialog-head';
-        const heading = addText(head, 'h2', 'Export system report');
+        const heading = addText(head, 'h2', text('Export system report', 'Sistem raporunu dışa aktar'));
         heading.id = 'sm-export-title';
         const close = document.createElement('button');
         close.type = 'button'; close.className = 'sm-export-close';
-        close.textContent = '×'; close.setAttribute('aria-label', 'Close');
+        close.textContent = '×';
+        close.setAttribute('aria-label', text('Close', 'Kapat'));
         head.appendChild(close); dialog.appendChild(head);
-        addText(dialog, 'p', 'Choose how you want to save the current dashboard snapshot.', 'sm-export-description');
+        const description = addText(dialog, 'p', text('Choose how you want to save the current dashboard snapshot.', 'Mevcut kontrol paneli verilerini hangi formatta kaydetmek istediğinizi seçin.'), 'sm-export-description');
+        description.id = 'sm-export-description';
         const choices = document.createElement('div'); choices.className = 'sm-export-choices';
         const options = [
-            {format:'pdf',icon:'▤',title:'PDF report',detail:'A polished report with resource charts and system status.'},
-            {format:'json',icon:'{ }',title:'Structured data',detail:'Current metrics in a machine-readable format.'},
-            {format:'txt',icon:'≡',title:'Plain text',detail:'A lightweight summary that is easy to read anywhere.'}
+            {format:'pdf',icon:'▤',title:text('PDF report', 'PDF raporu'),detail:text('A formatted report with resource charts and system status.', 'Kaynak kullanım grafikleri ve sistem durumunu içeren düzenli rapor.')},
+            {format:'json',icon:'{ }',title:text('Structured data', 'Yapılandırılmış veri'),detail:text('Current metrics in a machine-readable format.', 'Mevcut ölçümleri uygulamalarla işlenebilir veri biçiminde kaydeder.')},
+            {format:'txt',icon:'≡',title:text('Plain text', 'Metin belgesi'),detail:text('A lightweight summary that is easy to read anywhere.', 'Her yerde kolayca açılabilen, okunabilir metin özeti.')}
         ];
         let dismissed = false;
         const finish = () => { if (dismissed) return; dismissed = true; overlay.remove(); document.removeEventListener('keydown', onKeydown); button.focus(); };
@@ -334,7 +339,7 @@ apply();
             const report = collectReport(); finish();
             if (format === 'json') download(JSON.stringify(report, null, 2), 'application/json;charset=utf-8', 'json');
             else if (format === 'txt') {
-                const lines = ['SYSTEM MONITOR REPORT', 'Generated: ' + report.generated_at, 'Last checked: ' + report.last_checked, 'Overall health: ' + report.overall_health, '', ...report.metrics.flatMap(metric => [metric.section, metric.value, metric.details, ''])];
+                const lines = [text('SYSTEM MONITOR REPORT', 'SİSTEM İZLEME RAPORU'), text('Generated: ', 'Oluşturulma: ') + report.generated_at, text('Last checked: ', 'Son kontrol: ') + report.last_checked, text('Overall health: ', 'Genel durum: ') + report.overall_health, '', ...report.metrics.flatMap(metric => [metric.section, metric.value, metric.details, ''])];
                 download(lines.join('\\n'), 'text/plain;charset=utf-8', 'txt');
             } else exportPdf(report);
         };
@@ -349,7 +354,7 @@ apply();
             item.addEventListener('click', () => choose(option.format)); choices.appendChild(item);
         });
         dialog.appendChild(choices);
-        addText(dialog, 'p', 'Includes the latest values currently shown on this dashboard.', 'sm-export-footnote');
+        addText(dialog, 'p', text('Includes the latest values currently shown on this dashboard.', 'Rapor, kontrol panelinde o anda görünen en güncel değerleri içerir.'), 'sm-export-footnote');
         overlay.appendChild(dialog); document.body.appendChild(overlay);
         const onKeydown = event => {
             if (event.key === 'Escape') finish();
