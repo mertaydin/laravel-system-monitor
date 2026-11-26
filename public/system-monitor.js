@@ -186,7 +186,7 @@ apply();
     const animate = () => {
         gauges.forEach(gauge => {
             const target = Math.max(0, Math.min(289, Number(gauge.dataset.smGaugeTarget) || 0));
-            gauge.style.strokeDasharray = `\u0024{target} 289`;
+            gauge.style.strokeDasharray = String(target) + ' 289';
         });
     };
 
