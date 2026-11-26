@@ -1,3 +1,7 @@
+## Unreleased
+
+- Redesign the printable PDF report with a polished A4 layout, clear status summary, resource cards, and readable component table.
+
 ## v0.2.5 - 2026-11-26
 
 - Add a printable PDF report with current resource-utilization charts and a point-in-time metric table to the existing Export Report action.
