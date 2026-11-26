@@ -77,3 +77,15 @@ html[dir="rtl"] .sm-card-sound-toggle{right:auto;left:12px}
 
 .sm-alert-label{display:inline-flex;align-items:center;gap:5px;margin-left:auto;padding:3px 8px;border:1px solid rgba(255,55,75,.55);border-radius:999px;background:rgba(120,12,28,.28);color:#ff6678;font-size:10px;font-weight:700;line-height:1.4;box-shadow:0 0 9px rgba(255,35,55,.2)}
 .sm-card.sm-alert-active{background:linear-gradient(145deg,rgba(75,18,30,.58),rgba(28,20,31,.98));border-color:rgba(255,35,55,.72);box-shadow:0 0 9px rgba(255,35,55,.35),0 0 24px rgba(255,20,45,.16)}
+
+
+/* Keep the initial empty state visible, then ease the gauge to its measured value. */
+.sm-gauge-progress {
+    transition: stroke-dasharray 2.2s cubic-bezier(.22, .75, .25, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sm-gauge-progress {
+        transition: none;
+    }
+}
