@@ -295,18 +295,68 @@ apply();
         window.print();
         window.setTimeout(cleanup, 60000);
     };
-    button.addEventListener('click', () => {
-        const choice = window.prompt('Export format: json, txt, or pdf', 'pdf');
-        if (choice === null) return;
-        const format = choice.trim().toLowerCase();
-        const report = collectReport();
-        if (format === 'json') download(JSON.stringify(report, null, 2), 'application/json;charset=utf-8', 'json');
-        else if (format === 'txt') {
-            const lines = ['SYSTEM MONITOR REPORT', 'Generated: ' + report.generated_at, 'Last checked: ' + report.last_checked, 'Overall health: ' + report.overall_health, '', ...report.metrics.flatMap(metric => [metric.section, metric.value, metric.details, ''])];
-            download(lines.join('\n'), 'text/plain;charset=utf-8', 'txt');
-        } else if (format === 'pdf') exportPdf(report);
-        else window.alert('Choose json, txt, or pdf.');
-    });
+    const openFormatPicker = () => {
+        if (document.querySelector('[data-sm-export-dialog]')) return;
+        const overlay = document.createElement('div');
+        overlay.className = 'sm-export-overlay';
+        overlay.dataset.smExportDialog = 'true';
+        const dialog = document.createElement('section');
+        dialog.className = 'sm-export-dialog';
+        dialog.setAttribute('role', 'dialog');
+        dialog.setAttribute('aria-modal', 'true');
+        dialog.setAttribute('aria-labelledby', 'sm-export-title');
+        const head = document.createElement('div');
+        head.className = 'sm-export-dialog-head';
+        const heading = addText(head, 'h2', 'Export system report');
+        heading.id = 'sm-export-title';
+        const close = document.createElement('button');
+        close.type = 'button'; close.className = 'sm-export-close';
+        close.textContent = '×'; close.setAttribute('aria-label', 'Close');
+        head.appendChild(close); dialog.appendChild(head);
+        addText(dialog, 'p', 'Choose how you want to save the current dashboard snapshot.', 'sm-export-description');
+        const choices = document.createElement('div'); choices.className = 'sm-export-choices';
+        const options = [
+            {format:'pdf',icon:'▤',title:'PDF report',detail:'A polished report with resource charts and system status.'},
+            {format:'json',icon:'{ }',title:'Structured data',detail:'Current metrics in a machine-readable format.'},
+            {format:'txt',icon:'≡',title:'Plain text',detail:'A lightweight summary that is easy to read anywhere.'}
+        ];
+        let dismissed = false;
+        const finish = () => { if (dismissed) return; dismissed = true; overlay.remove(); document.removeEventListener('keydown', onKeydown); button.focus(); };
+        const choose = format => {
+            const report = collectReport(); finish();
+            if (format === 'json') download(JSON.stringify(report, null, 2), 'application/json;charset=utf-8', 'json');
+            else if (format === 'txt') {
+                const lines = ['SYSTEM MONITOR REPORT', 'Generated: ' + report.generated_at, 'Last checked: ' + report.last_checked, 'Overall health: ' + report.overall_health, '', ...report.metrics.flatMap(metric => [metric.section, metric.value, metric.details, ''])];
+                download(lines.join('\\n'), 'text/plain;charset=utf-8', 'txt');
+            } else exportPdf(report);
+        };
+        options.forEach(option => {
+            const item = document.createElement('button'); item.type = 'button';
+            item.className = 'sm-export-option' + (option.format === 'pdf' ? ' is-featured' : '');
+            item.dataset.exportFormat = option.format;
+            const icon = addText(item, 'span', option.icon, 'sm-export-option-icon'); icon.setAttribute('aria-hidden','true');
+            const copy = document.createElement('span'); copy.className = 'sm-export-option-copy';
+            addText(copy, 'strong', option.title); addText(copy, 'span', option.detail); item.appendChild(copy);
+            const arrow = addText(item, 'span', '›', 'sm-export-option-arrow'); arrow.setAttribute('aria-hidden','true');
+            item.addEventListener('click', () => choose(option.format)); choices.appendChild(item);
+        });
+        dialog.appendChild(choices);
+        addText(dialog, 'p', 'Includes the latest values currently shown on this dashboard.', 'sm-export-footnote');
+        overlay.appendChild(dialog); document.body.appendChild(overlay);
+        const onKeydown = event => {
+            if (event.key === 'Escape') finish();
+            if (event.key === 'Tab') {
+                const focusable = [...dialog.querySelectorAll('button:not(:disabled)')];
+                if (event.shiftKey && document.activeElement === focusable[0]) { event.preventDefault(); focusable.at(-1).focus(); }
+                else if (!event.shiftKey && document.activeElement === focusable.at(-1)) { event.preventDefault(); focusable[0].focus(); }
+            }
+        };
+        document.addEventListener('keydown', onKeydown);
+        close.addEventListener('click', finish);
+        overlay.addEventListener('click', event => { if (event.target === overlay) finish(); });
+        close.focus();
+    };
+    button.addEventListener('click', openFormatPicker);
     header.appendChild(button);
 })();
 
